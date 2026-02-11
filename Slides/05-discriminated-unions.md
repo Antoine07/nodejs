@@ -10,6 +10,8 @@ size: 16:9
 # 5 — Types littéraux & discriminants
 ## Structurer des systèmes robustes
 
+[← Retour à l’index](./index.html)
+
 ---
 
 # Objectif du chapitre

@@ -4,11 +4,15 @@ title: "TypeScript — Types & inférence"
 theme: gaia
 paginate: true
 size: 16:9
+class: lead
+header: "[index](https://antoine07.github.io/ts)"
 ---
 
 <!-- _class: lead -->
 # 1 — Types & inférence
 ## Comprendre la base sans sur-typer
+
+[← Retour à l’index](./index.html)
 
 ---
 
@@ -204,4 +208,3 @@ Alternative souvent meilleure : `as const` + extraction de types (chapitres suiv
 - L'inférence est votre alliée : n'ajoutez pas du bruit.
 - Annoter = utile quand on définit un contrat, pas quand on répète.
 - Littéraux + `as const` rendent les configs et états robustes.
-

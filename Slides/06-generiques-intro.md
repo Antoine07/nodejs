@@ -10,6 +10,8 @@ size: 16:9
 # 6 — Génériques (intro)
 ## Réutiliser sans perdre le typage
 
+[← Retour à l’index](./index.html)
+
 ---
 
 # Objectif du chapitre

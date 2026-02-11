@@ -10,6 +10,8 @@ size: 16:9
 # 9 — Typage du monde réel
 ## Gérer l’imprévisible (données externes)
 
+[← Retour à l’index](./index.html)
+
 ---
 
 # Objectif du chapitre

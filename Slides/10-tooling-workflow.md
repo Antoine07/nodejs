@@ -10,6 +10,8 @@ size: 16:9
 # 10 — Tooling & workflow
 ## Pourquoi “ça compile quand même”
 
+[← Retour à l’index](./index.html)
+
 ---
 
 # Objectif du chapitre

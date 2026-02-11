@@ -10,6 +10,8 @@ size: 16:9
 # 7 — Contraintes : `extends`
 ## Sécuriser les génériques
 
+[← Retour à l’index](./index.html)
+
 ---
 
 # Objectif du chapitre

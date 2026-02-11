@@ -11,6 +11,8 @@ size: 16:9
 ## Introduction et bases avancées
 ## Pourquoi TypeScript ?
 
+[← Retour à l’index](./index.html)
+
 JavaScript est :
 - flexible
 - permissif
@@ -24,6 +26,48 @@ Cette flexibilité entraîne :
 - des bugs silencieux
 - des erreurs tardives
 - des comportements inattendus
+
+---
+
+## Setup (repo)
+
+Dans ce repo :
+- `Slides/` : sources Markdown des slides
+- `docs/` : sorties HTML (générées)
+- `starter/` : projet Node + TypeScript (exemples / exercices)
+
+Pour générer les slides HTML :
+- `npm run slides:build`
+
+---
+
+## Setup `starter/` : runtime vs type-check
+
+Dans `starter/package.json` :
+
+```json
+"dev": "tsx watch src/index.ts",
+"typecheck": "tsc --watch --pretty  src/index.ts"
+```
+
+- `dev` exécute le code (runtime)
+- `typecheck` vérifie les types (analyse statique)
+
+>Message clé : TypeScript ne protège que si on lance le type-check.
+
+---
+
+## Double écran / split VS Code (recommandé)
+
+But : éviter “ça tourne donc c’est bon”.
+
+- Split de l’éditeur (ou 2 écrans) pour garder le code visible
+- 2 terminaux en parallèle :
+  - terminal A : `npm run dev`
+  - terminal B : `npm run typecheck`
+- Dans VS Code : split editor + split terminal (même résultat sur un seul écran)
+
+<img src="./images/configuration.png" style="width: 92%;" />
 
 ---
 
@@ -391,4 +435,3 @@ Ajoutez une propriété `role` à un type `User` :
 
 - `"admin"` | `"user"`
 - identifiez les impacts dans le code
-

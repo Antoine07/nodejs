@@ -10,6 +10,8 @@ size: 16:9
 # 3 — Objets & structures
 ## Décrire la forme des données
 
+[← Retour à l’index](./index.html)
+
 ---
 
 # Objectif du chapitre

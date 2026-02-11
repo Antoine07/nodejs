@@ -10,6 +10,8 @@ size: 16:9
 # 2 — Fonctions
 ## Le “contrat” : entrées → sortie
 
+[← Retour à l’index](./index.html)
+
 ---
 
 # Objectif du chapitre

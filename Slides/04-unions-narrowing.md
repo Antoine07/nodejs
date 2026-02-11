@@ -10,6 +10,8 @@ size: 16:9
 # 4 — Unions & narrowing
 ## Rendre les états explicites
 
+[← Retour à l’index](./index.html)
+
 ---
 
 # Objectif du chapitre

@@ -10,6 +10,8 @@ size: 16:9
 # 11 — Bonnes pratiques & anti-patterns
 ## TS lisible et durable
 
+[← Retour à l’index](./index.html)
+
 ---
 
 # Objectif du chapitre

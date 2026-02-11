@@ -10,6 +10,8 @@ size: 16:9
 # 12 — Mise en pratique
 ## TP fil rouge : JS → TS (progressif)
 
+[← Retour à l’index](./index.html)
+
 ---
 
 # Objectif du TP

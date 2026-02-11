@@ -10,6 +10,8 @@ size: 16:9
 # 8 — `keyof` et accès dynamique
 ## Manipuler des clés en sécurité
 
+[← Retour à l’index](./index.html)
+
 ---
 
 # Objectif du chapitre
