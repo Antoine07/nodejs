@@ -1,16 +1,14 @@
 ---
 marp: true
-title: "TypeScript — Types littéraux & discriminants"
-theme: gaia
+theme: default
 paginate: true
-size: 16:9
+class: lead
+header: "[index](https://antoine07.github.io/r)"
+title: "TypeScript — Types littéraux & discriminants"
 ---
 
-<!-- _class: lead -->
 # 5 — Types littéraux & discriminants
 ## Structurer des systèmes robustes
-
-[← Retour à l’index](./index.html)
 
 ---
 

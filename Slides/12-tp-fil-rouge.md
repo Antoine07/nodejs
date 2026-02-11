@@ -1,16 +1,14 @@
 ---
 marp: true
-title: "TypeScript — TP fil rouge"
-theme: gaia
+theme: default
 paginate: true
-size: 16:9
+class: lead
+header: "[index](https://antoine07.github.io/r)"
+title: "TypeScript — TP fil rouge"
 ---
 
-<!-- _class: lead -->
 # 12 — Mise en pratique
 ## TP fil rouge : JS → TS (progressif)
-
-[← Retour à l’index](./index.html)
 
 ---
 

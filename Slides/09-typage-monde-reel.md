@@ -1,16 +1,14 @@
 ---
 marp: true
-title: "TypeScript — Typage du monde réel"
-theme: gaia
+theme: default
 paginate: true
-size: 16:9
+class: lead
+header: "[index](https://antoine07.github.io/r)"
+title: "TypeScript — Typage du monde réel"
 ---
 
-<!-- _class: lead -->
 # 9 — Typage du monde réel
 ## Gérer l’imprévisible (données externes)
-
-[← Retour à l’index](./index.html)
 
 ---
 

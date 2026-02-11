@@ -1,16 +1,14 @@
 ---
 marp: true
-title: "TypeScript — Fonctions"
-theme: gaia
+theme: default
 paginate: true
-size: 16:9
+class: lead
+header: "[index](https://antoine07.github.io/r)"
+title: "TypeScript — Fonctions"
 ---
 
-<!-- _class: lead -->
 # 2 — Fonctions
 ## Le “contrat” : entrées → sortie
-
-[← Retour à l’index](./index.html)
 
 ---
 

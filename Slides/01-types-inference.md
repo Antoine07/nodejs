@@ -1,18 +1,14 @@
 ---
 marp: true
-title: "TypeScript — Types & inférence"
-theme: gaia
+theme: default
 paginate: true
-size: 16:9
 class: lead
-header: "[index](https://antoine07.github.io/ts)"
+header: "[index](https://antoine07.github.io/r)"
+title: "TypeScript — Types & inférence"
 ---
 
-<!-- _class: lead -->
 # 1 — Types & inférence
 ## Comprendre la base sans sur-typer
-
-[← Retour à l’index](./index.html)
 
 ---
 

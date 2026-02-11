@@ -1,16 +1,14 @@
 ---
 marp: true
-title: "TypeScript — Bonnes pratiques & anti-patterns"
-theme: gaia
+theme: default
 paginate: true
-size: 16:9
+class: lead
+header: "[index](https://antoine07.github.io/r)"
+title: "TypeScript — Bonnes pratiques & anti-patterns"
 ---
 
-<!-- _class: lead -->
 # 11 — Bonnes pratiques & anti-patterns
 ## TS lisible et durable
-
-[← Retour à l’index](./index.html)
 
 ---
 

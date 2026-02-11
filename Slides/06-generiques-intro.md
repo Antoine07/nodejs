@@ -1,16 +1,14 @@
 ---
 marp: true
-title: "TypeScript — Génériques (intro)"
-theme: gaia
+theme: default
 paginate: true
-size: 16:9
+class: lead
+header: "[index](https://antoine07.github.io/r)"
+title: "TypeScript — Génériques (intro)"
 ---
 
-<!-- _class: lead -->
 # 6 — Génériques (intro)
 ## Réutiliser sans perdre le typage
-
-[← Retour à l’index](./index.html)
 
 ---
 

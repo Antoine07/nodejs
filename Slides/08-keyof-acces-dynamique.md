@@ -1,16 +1,14 @@
 ---
 marp: true
-title: "TypeScript — keyof et accès dynamique"
-theme: gaia
+theme: default
 paginate: true
-size: 16:9
+class: lead
+header: "[index](https://antoine07.github.io/r)"
+title: "TypeScript — keyof et accès dynamique"
 ---
 
-<!-- _class: lead -->
 # 8 — `keyof` et accès dynamique
 ## Manipuler des clés en sécurité
-
-[← Retour à l’index](./index.html)
 
 ---
 

@@ -1,16 +1,14 @@
 ---
 marp: true
-title: "TypeScript — Objets & structures"
-theme: gaia
+theme: default
 paginate: true
-size: 16:9
+class: lead
+header: "[index](https://antoine07.github.io/r)"
+title: "TypeScript — Objets & structures"
 ---
 
-<!-- _class: lead -->
 # 3 — Objets & structures
 ## Décrire la forme des données
-
-[← Retour à l’index](./index.html)
 
 ---
 

@@ -1,16 +1,14 @@
 ---
 marp: true
-title: "TypeScript — Tooling & workflow"
-theme: gaia
+theme: default
 paginate: true
-size: 16:9
+class: lead
+header: "[index](https://antoine07.github.io/r)"
+title: "TypeScript — Tooling & workflow"
 ---
 
-<!-- _class: lead -->
 # 10 — Tooling & workflow
 ## Pourquoi “ça compile quand même”
-
-[← Retour à l’index](./index.html)
 
 ---
 

@@ -1,12 +1,12 @@
 ---
 marp: true
-title: "Cours TypeScript — Index"
-theme: gaia
+theme: default
 paginate: true
-size: 16:9
+class: lead
+header: "[index](https://antoine07.github.io/r)"
+title: "Cours TypeScript — Index"
 ---
 
-<!-- _class: lead -->
 # Cours TypeScript
 ## Support de cours (slides)
 

@@ -1,16 +1,14 @@
 ---
 marp: true
-title: "TypeScript — Contraintes : extends"
-theme: gaia
+theme: default
 paginate: true
-size: 16:9
+class: lead
+header: "[index](https://antoine07.github.io/r)"
+title: "TypeScript — Contraintes : extends"
 ---
 
-<!-- _class: lead -->
 # 7 — Contraintes : `extends`
 ## Sécuriser les génériques
-
-[← Retour à l’index](./index.html)
 
 ---
 

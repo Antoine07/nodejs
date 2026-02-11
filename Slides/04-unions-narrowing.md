@@ -1,16 +1,14 @@
 ---
 marp: true
-title: "TypeScript — Unions & narrowing"
-theme: gaia
+theme: default
 paginate: true
-size: 16:9
+class: lead
+header: "[index](https://antoine07.github.io/r)"
+title: "TypeScript — Unions & narrowing"
 ---
 
-<!-- _class: lead -->
 # 4 — Unions & narrowing
 ## Rendre les états explicites
-
-[← Retour à l’index](./index.html)
 
 ---
 

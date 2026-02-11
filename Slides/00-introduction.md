@@ -1,17 +1,15 @@
 ---
 marp: true
-title: "TypeScript — Introduction et bases avancées"
-theme: gaia
+theme: default
 paginate: true
-size: 16:9
+class: lead
+header: "[index](https://antoine07.github.io/r)"
+title: "TypeScript — Introduction et bases avancées"
 ---
 
-<!-- _class: lead -->
 # TypeScript
 ## Introduction et bases avancées
 ## Pourquoi TypeScript ?
-
-[← Retour à l’index](./index.html)
 
 JavaScript est :
 - flexible
