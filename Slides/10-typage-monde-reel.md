@@ -4,10 +4,10 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/r)"
-title: "TypeScript — Typage du monde réel"
+title: "TypeScript — 10 Typage du monde réel"
 ---
 
-# 9 — Typage du monde réel
+# 10 — Typage du monde réel
 ## Gérer l’imprévisible (données externes)
 
 ---

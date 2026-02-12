@@ -4,10 +4,10 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/r)"
-title: "TypeScript — Fonctions"
+title: "TypeScript — 3 Fonctions"
 ---
 
-# 2 — Fonctions
+# 3 — Fonctions
 ## Le “contrat” : entrées → sortie
 
 ---

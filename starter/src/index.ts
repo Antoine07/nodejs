@@ -12,4 +12,6 @@ console.log(x)
 
 let a: string;
 
+const value = JSON.parse('{"price":"12.50"}') as { price: number };
 
+value.price.toFixed(2);

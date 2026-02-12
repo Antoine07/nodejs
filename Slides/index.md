@@ -14,24 +14,25 @@ title: "Cours TypeScript — Index"
 
 # Plan
 
-0. [Introduction : pourquoi TypeScript ?](./00-introduction.html)
-1. [Types & inférence](./01-types-inference.html)
-2. [Fonctions](./02-fonctions.html)
-3. [Objets & structures](./03-objets-structures.html)
-4. [Unions & narrowing](./04-unions-narrowing.html)
-5. [Types littéraux & discriminants](./05-discriminated-unions.html)
+0. [Contexte de démarrage (Docker + starter)](./00-contexte-demarrage.html)
+1. [Introduction : pourquoi TypeScript ?](./01-introduction.html)
+2. [Types & inférence](./02-types-inference.html)
+3. [Fonctions](./03-fonctions.html)
+4. [Objets & structures](./04-objets-structures.html)
+5. [Unions & narrowing](./05-unions-narrowing.html)
+6. [Types littéraux & discriminants](./06-discriminated-unions.html)
 
 ---
 
 # Plan (suite)
 
-6. [Génériques (intro)](./06-generiques-intro.html)
-7. [Contraintes : `extends`](./07-contraintes-extends.html)
-8. [`keyof` et accès dynamique](./08-keyof-acces-dynamique.html)
-9. [Typage du monde réel](./09-typage-monde-reel.html)
-10. [Tooling & workflow](./10-tooling-workflow.html)
-11. [Bonnes pratiques & anti-patterns](./11-bonnes-pratiques.html)
-12. [Mise en pratique / TP fil rouge](./12-tp-fil-rouge.html)
+7. [Génériques (intro)](./07-generiques-intro.html)
+8. [Contraintes : `extends`](./08-contraintes-extends.html)
+9. [`keyof` et accès dynamique](./09-keyof-acces-dynamique.html)
+10. [Typage du monde réel](./10-typage-monde-reel.html)
+11. [Tooling & workflow](./11-tooling-workflow.html)
+12. [Bonnes pratiques & anti-patterns](./12-bonnes-pratiques.html)
+13. [Mise en pratique / TP fil rouge](./13-tp-fil-rouge.html)
 
 ---
 

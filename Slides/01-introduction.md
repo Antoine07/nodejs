@@ -4,11 +4,10 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/r)"
-title: "TypeScript — Introduction et bases avancées"
+title: "TypeScript — 1 Introduction"
 ---
 
-# TypeScript
-## Introduction et bases avancées
+# 1 — Introduction
 ## Pourquoi TypeScript ?
 
 JavaScript est :
@@ -24,45 +23,6 @@ Cette flexibilité entraîne :
 - des bugs silencieux
 - des erreurs tardives
 - des comportements inattendus
-
----
-
-## Docker lancer les conteneurs
-
-Téléchargez le starter et lancez le en local, puis travailler avec deux écrans en lançant `dev` et `typecheck`, voir le détails dans les slides qui suivent.
-
----
-
-## setup `starter/` : runtime vs type-check
-
-Dans `starter/package.json` :
-
-```json
-"dev": "tsx watch src/index.ts",
-"typecheck": "tsc --watch --pretty  src/index.ts"
-```
-
-- `dev` exécute le code (runtime)
-- `typecheck` vérifie les types (analyse statique)
-
->Message clé : TypeScript ne protège que si on lance le type-check.
-
----
-
-
-## Double écran / split VS Code (recommandé)
-
-But : éviter “ça tourne donc c’est bon”.
-
-- Split de l’éditeur (ou 2 écrans) pour garder le code visible
-- 2 terminaux en parallèle :
-  - terminal A : `npm run dev`
-  - terminal B : `npm run typecheck`
-- Dans VS Code : split editor + split terminal (même résultat sur un seul écran)
-
----
-
-<img src="./images/configuration.png" width="800" />
 
 ---
 
@@ -90,13 +50,12 @@ formatPrice(apiResponse.price);
 Problèmes possibles :
 
 - concaténation au lieu d'addition
-- crash au **runtime** (éxecution du programme)
+- crash au **runtime**
 - difficile à détecter en tests
-
 
 ---
 
-## Exemple de version robuste en production en TS
+## Version robuste en TypeScript
 
 ```ts
 function parsePrice(value: string): number {
@@ -110,10 +69,9 @@ function parsePrice(value: string): number {
 const result = formatPrice(parsePrice(apiResponse.price));
 ```
 
-
 ---
 
-## Bug silencieux en JS pure : champ optionnel non géré
+## Bug silencieux : champ optionnel non géré
 
 ```js
 function sendEmail(user) {
@@ -129,13 +87,12 @@ Le bug apparaît :
 
 ---
 
-## Version robuste de l'exemple précédent en TS
+## Version robuste en TypeScript
 
 ```ts
 type User = {
   email?: string;
 };
-
 
 function sendEmail(user: User): string {
   if (!user.email) {
@@ -146,7 +103,6 @@ function sendEmail(user: User): string {
 }
 ```
 
-
 ---
 
 ## Ce que fait TypeScript
@@ -156,10 +112,19 @@ TypeScript :
 - ajoute des **types statiques**
 - vérifie le code **avant l'exécution**
 - détecte :
+
   - propriétés manquantes
   - mauvais types
   - incohérences de retour
-- améliore fortement la DX (Developer Experience)
+- améliore la DX
+
+---
+
+## 🏷️ Définition — Typage statique
+
+Les types sont vérifiés avant l'exécution du programme.
+
+Les erreurs sont détectées à la compilation.
 
 ---
 
@@ -169,7 +134,7 @@ TypeScript :
 
 - ne valide pas les données externes
 - ne remplace pas les tests
-- ne supprime pas les erreurs runtime ( à l'exécution)
+- ne supprime pas les erreurs runtime
 
 Il complète :
 
@@ -180,7 +145,8 @@ Il complète :
 ---
 
 <!-- _class: lead -->
-**TypeScript n'empêche pas d'écrire du JavaScript.**  
+
+**TypeScript n'empêche pas d'écrire du JavaScript.**
 **Il empêche d'écrire du JavaScript faux.**
 
 ---
@@ -191,7 +157,7 @@ Il complète :
 const n: number = 42;
 ```
 
-- Les types n'existent pas au runtime
+- Les types annotés n'existent pas au runtime
 - Le code généré reste du JavaScript
 
 ---
@@ -201,7 +167,7 @@ const n: number = 42;
 ```ts
 const value = JSON.parse('{"price":"12.50"}') as { price: number };
 
-value.price.toFixed(2);
+value.price.toFixed(2); // 💥 runtime error
 ```
 
 Le compilateur fait confiance.
@@ -209,6 +175,72 @@ Les données peuvent mentir.
 
 ---
 
+## ⚖️ Compile-time ≠ Runtime
+
+```ts
+try {
+  let name: string = "Alice";
+  name = null; // ❌ erreur TypeScript
+} catch (e) {
+  console.log("Jamais exécuté");
+}
+```
+
+Les erreurs de type sont bloquées **avant exécution**.
+
+---
+
+## try/catch fonctionne uniquement au runtime
+
+```ts
+try {
+  JSON.parse("invalid json"); // 💥 erreur JS
+} catch (e) {
+  console.log("Erreur capturée");
+}
+```
+
+---
+
+## 🧱 Frontière du système
+
+Deux mondes :
+
+**Interne (contrôlé)**
+
+- fonctions
+- variables locales
+- transformations
+
+**Externe (incertain)**
+- API
+- JSON.parse
+- formulaires
+- process.env
+
+TypeScript protège très bien le monde interne.
+Le monde externe doit être validé.
+
+---
+
+## Solution robuste en production
+
+```ts
+import { z } from "zod";
+
+const Schema = z.object({
+  price: z.coerce.number(),
+});
+
+const value = Schema.parse(JSON.parse('{"price":"12.50"}'));
+
+value.price.toFixed(2);
+```
+
+> TypeScript vérifie votre code.
+> Zod vérifie vos données.
+
+---
 
 ## Types primitifs
 
@@ -231,12 +263,13 @@ data.foo.bar();
 data.toUpperCase();
 ```
 
-- aucune vérification
-- désactive TypeScript localement
+Aucune sécurité.
 
 ---
 
 ## `unknown` : alternative sûre
+
+Contrairement à `any`, TypeScript ne vous laisse rien faire tant que vous n'avez pas vérifié.
 
 ```ts
 let data: unknown;
@@ -245,9 +278,6 @@ if (typeof data === "string") {
   data.toUpperCase();
 }
 ```
-
-- oblige à vérifier
-- protège contre les abus
 
 ---
 
@@ -258,11 +288,9 @@ type User = {
   id: number;
   email: string;
 };
-```
 
-```ts
-function sendEmail(user: User) {
-  user.email.toLowerCase();
+function sendEmail(user: User): string {
+  return user.email.toLowerCase();
 }
 ```
 
@@ -275,16 +303,7 @@ type User = {
   id: number;
   email?: string;
 };
-```
 
-```ts
-user.email.toLowerCase(); // erreur TS
-```
-
-TypeScript force à gérer l'absence.
-
-Solution (exemple) : 
-```ts
 user.email?.toLowerCase();
 ```
 
@@ -301,7 +320,7 @@ function add(a: number, b: number): number {
 Erreur détectée immédiatement :
 
 ```ts
-return "42";
+add("42", 8); // ❌ erreur
 ```
 
 ---
@@ -312,108 +331,85 @@ return "42";
 const add = (a: number, b: number) => a + b;
 ```
 
-Le type de retour est inféré automatiquement.
+TypeScript infère automatiquement le type de retour.
+
+---
+
+## Quand dépendre de l'inférence
+
+Excellente pour le code local :
 
 ```ts
-// TypeScript en déduit :
-const add: (a: number, b: number) => number
+const tags = ["ts", "js"];
+const user = { id: 1, name: "Ada" };
+const ids = [user].map((u) => u.id);
+```
+
+Mais aux frontières, il faut être explicite et valider.
+
+---
+
+## Limites de l'inférence
+
+- contrats publics
+- objets vides
+- `let` élargit les littéraux
+- unions implicites
+
+---
+
+## Exemple — let élargit
+
+```ts
+type Role = "dev" | "admin";
+
+let role = "dev";
+
+function setRole(r: Role) {}
+
+setRole(role); // ❌
+```
+
+Solution :
+
+```ts
+const role = "dev";
 ```
 
 ---
 
-## ✅ Quand on peut dépendre uniquement de l'inférence
+## Unions implicites
 
-Dès que TypeScript voit **la valeur**, il infère très bien.
-
-Cas typiques (code interne) :
-- variables locales initialisées (`const x = ...`)
-- objets/arrays construits sur place
-- transformations (`map`, `filter`, `reduce`)
-- retours “évidents” (une seule forme, pas de branches)
-
----
-
-## Exemples :
 ```ts
-const tags = ["ts", "js"]; // string[]
-const user = { id: 1, name: "Ada" }; // { id: number; name: string }
-const ids = [user].map((u) => u.id); // number[]
+let value: string | number;
+
+if (Math.random() > 0.5) {
+  value = "hello";
+} else {
+  value = 42;
+}
 ```
 
-Idée : l'inférence est excellente pour le **code local**, pas pour les **frontières**.
+TypeScript combine les types possibles.
 
 ---
 
-## ❗ Quand éviter de dépendre uniquement de l'inférence 1/2
-
-- quand tu définis un **contrat** :
-  - paramètres de fonctions
-  - types exportés (API publique d'un module)
-  - callbacks/handlers (ce que l'appelant doit fournir)
-- quand l'inférence peut être **trop large** ou **trompeuse** :
-  - tableaux/objets vides (`[]`, `{}`) ⇒ type flou
-  - `let` élargit les littéraux (`"dev"` devient `string`)
-  - unions implicites qui apparaissent via des branches (`string | number | null`)
-
----
-
-## ❗ Quand éviter de dépendre uniquement de l'inférence 2/2
-
-- quand tu manipules le **monde réel** :
-  - `JSON.parse`, réponses API, formulaires ⇒ `unknown` jusqu'à validation
-  - `process.env.*` ⇒ `string | undefined` (il faut parser/valider)
-
----
-
-
-## Tableaux et génériques
+## null et strictNullChecks
 
 ```ts
-const ids: number[] = [1, 2, 3];
-```
-
-```ts
-ids.push("4"); // erreur
+let value: string = null; // interdit en strict mode
 ```
 
 ---
 
-## Union types : gérer plusieurs cas
-
-```ts
-type Status = "loading" | "success" | "error";
-```
-
-```ts
-function render(status: Status) {}
-```
-
-Impossible de passer une valeur non prévue.
-
----
-
-## `null`, `undefined` et `strictNullChecks`
-
-Avec `strictNullChecks: true` :
-
-```ts
-let value: string = null; // interdit
-```
-
-Oblige à écrire du code explicite et sûr.
-
----
-
-## Exemple réaliste : API
+## Exemple API réaliste
 
 ```ts
 type ApiUser = {
   id: number;
   email: string | null;
 };
-```
 
-```ts
 if (user.email !== null) {
   user.email.toLowerCase();
 }
@@ -421,33 +417,19 @@ if (user.email !== null) {
 
 ---
 
-## Le vrai pouvoir : le refactor
-
-Modifier un type central :
-
-- révèle tous les impacts
-- évite les oublis
-- sécurise les évolutions
-
-Le compilateur devient un allié.
-
----
-
 ## TypeScript remplace quoi ?
 
-Il remplace :
-
-- la documentation obsolète
-- beaucoup de QA manuelle
-- certains tests triviaux
+- documentation obsolète
+- QA manuelle
+- tests triviaux
 
 ---
 
 ## Il ne remplace pas :
 
-- la logique métier
-- les tests complexes
-- la validation **runtime**
+- logique métier
+- tests complexes
+- validation runtime
 
 ---
 

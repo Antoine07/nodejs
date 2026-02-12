@@ -4,10 +4,10 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/r)"
-title: "TypeScript — Objets & structures"
+title: "TypeScript — 4 Objets & structures"
 ---
 
-# 3 — Objets & structures
+# 4 — Objets & structures
 ## Décrire la forme des données
 
 ---

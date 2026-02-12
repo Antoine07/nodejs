@@ -4,10 +4,10 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/r)"
-title: "TypeScript — Types littéraux & discriminants"
+title: "TypeScript — 6 Types littéraux & discriminants"
 ---
 
-# 5 — Types littéraux & discriminants
+# 6 — Types littéraux & discriminants
 ## Structurer des systèmes robustes
 
 ---

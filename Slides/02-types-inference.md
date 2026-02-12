@@ -4,10 +4,10 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/r)"
-title: "TypeScript — Types & inférence"
+title: "TypeScript — 2 Types & inférence"
 ---
 
-# 1 — Types & inférence
+# 2 — Types & inférence
 ## Comprendre la base sans sur-typer
 
 ---

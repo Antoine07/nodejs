@@ -4,10 +4,10 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/r)"
-title: "TypeScript — Génériques (intro)"
+title: "TypeScript — 7 Génériques (intro)"
 ---
 
-# 6 — Génériques (intro)
+# 7 — Génériques (intro)
 ## Réutiliser sans perdre le typage
 
 ---

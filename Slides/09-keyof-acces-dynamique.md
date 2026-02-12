@@ -4,10 +4,10 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/r)"
-title: "TypeScript — keyof et accès dynamique"
+title: "TypeScript — 9 keyof et accès dynamique"
 ---
 
-# 8 — `keyof` et accès dynamique
+# 9 — `keyof` et accès dynamique
 ## Manipuler des clés en sécurité
 
 ---

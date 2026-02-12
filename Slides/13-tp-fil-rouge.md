@@ -4,10 +4,10 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/r)"
-title: "TypeScript — TP fil rouge"
+title: "TypeScript — 13 TP fil rouge"
 ---
 
-# 12 — Mise en pratique
+# 13 — Mise en pratique
 ## TP fil rouge : JS → TS (progressif)
 
 ---

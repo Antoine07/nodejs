@@ -4,10 +4,10 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/r)"
-title: "TypeScript — Bonnes pratiques & anti-patterns"
+title: "TypeScript — 12 Bonnes pratiques & anti-patterns"
 ---
 
-# 11 — Bonnes pratiques & anti-patterns
+# 12 — Bonnes pratiques & anti-patterns
 ## TS lisible et durable
 
 ---

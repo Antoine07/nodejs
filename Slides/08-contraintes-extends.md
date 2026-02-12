@@ -4,10 +4,10 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/r)"
-title: "TypeScript — Contraintes : extends"
+title: "TypeScript — 8 Contraintes : extends"
 ---
 
-# 7 — Contraintes : `extends`
+# 8 — Contraintes : `extends`
 ## Sécuriser les génériques
 
 ---

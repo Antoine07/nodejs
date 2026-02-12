@@ -4,10 +4,10 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/r)"
-title: "TypeScript — Unions & narrowing"
+title: "TypeScript — 5 Unions & narrowing"
 ---
 
-# 4 — Unions & narrowing
+# 5 — Unions & narrowing
 ## Rendre les états explicites
 
 ---

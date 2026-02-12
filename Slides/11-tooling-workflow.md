@@ -4,10 +4,10 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/r)"
-title: "TypeScript — Tooling & workflow"
+title: "TypeScript — 11 Tooling & workflow"
 ---
 
-# 10 — Tooling & workflow
+# 11 — Tooling & workflow
 ## Pourquoi “ça compile quand même”
 
 ---
