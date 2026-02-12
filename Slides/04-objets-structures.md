@@ -3,7 +3,7 @@ marp: true
 theme: default
 paginate: true
 class: lead
-header: "[index](https://antoine07.github.io/r)"
+header: "[index](https://antoine07.github.io/ts)"
 title: "TypeScript — 4 Objets & structures"
 ---
 
@@ -17,17 +17,17 @@ title: "TypeScript — 4 Objets & structures"
 - Savoir choisir `type` vs `interface`
 - Gérer propriétés optionnelles et `readonly`
 - Utiliser `Record` pour des dictionnaires
-- Comprendre “dictionnaire” vs “objet structuré”
+- Comprendre "dictionnaire" vs "objet structuré"
 
 ---
 
 # `type` vs `interface` (pratique)
 
 Deux outils proches, mais des usages classiques :
-- `interface` : forme d’objet “extensible” (souvent pour des modèles)
+- `interface` : forme d'objet "extensible" (souvent pour des modèles)
 - `type` : compositions, unions, aliases, utilitaires
 
-Dans beaucoup d’équipes : **préférence `type` par défaut**, `interface` pour objets publics/OO.
+Dans beaucoup d'équipes : **préférence `type` par défaut**, `interface` pour objets publics/OO.
 
 ---
 
@@ -53,7 +53,7 @@ interface User {
 }
 ```
 
-Différence visible surtout dans l’extension et le “merging” des interfaces.
+Différence visible surtout dans l'extension et le "merging" des interfaces.
 
 ---
 
@@ -119,11 +119,13 @@ Dictionnaire :
 type UsersById = Record<number, User>;
 ```
 
-Question à se poser : “mes clés sont-elles connues à l’avance ?”
+Question à se poser : "mes clés sont-elles connues à l'avance ?"
 
 ---
 
-# DTO / données API : attention au “contrat”
+# DTO / données API : attention au "contrat"
+
+🏷️ Définition : Un `DTO` est un objet dont le rôle est de transporter des données entre deux couches d'un système (API ↔ backend ↔ base de données), sans contenir de logique métier.
 
 ```ts
 type UserDTO = {
@@ -140,50 +142,3 @@ type User = {
 ```
 
 Souvent, on **sépare** DTO (API) et modèle métier (app).
-
----
-
-# Exercice A (12 min) — modèle métier
-
-1. Définis un type `OrderDTO` (donnée API) :
-   - `id: string`
-   - `total_cents: number`
-   - `status: "paid" | "pending" | "failed"`
-2. Définis un type `Order` (métier) :
-   - `id: string`
-   - `total: number` (euros)
-   - `status: ...` (idem)
-3. Écris `mapOrder(dto: OrderDTO): Order`
-
----
-
-# Exercice B (10 min) — dictionnaire
-
-À partir d’un tableau `User[]`, crée :
-- un `Record<number, User>` indexé par `id`
-
-Bonus :
-- que se passe-t-il si deux users ont le même `id` ?
-- quelle stratégie choisir (overwrite, erreur, tableau) ?
-
----
-
-# Correction (extrait)
-
-```ts
-type OrderStatus = "paid" | "pending" | "failed";
-type OrderDTO = { id: string; total_cents: number; status: OrderStatus };
-type Order = { id: string; total: number; status: OrderStatus };
-
-function mapOrder(dto: OrderDTO): Order {
-  return { id: dto.id, total: dto.total_cents / 100, status: dto.status };
-}
-```
-
----
-
-# À retenir
-
-- Décrire la forme des données = base d’un code robuste.
-- Optionnel et `readonly` évitent des bugs “invisibles”.
-- `Record` = dictionnaires typés, très utile en vrai.

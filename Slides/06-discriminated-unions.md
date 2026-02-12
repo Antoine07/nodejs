@@ -3,7 +3,7 @@ marp: true
 theme: default
 paginate: true
 class: lead
-header: "[index](https://antoine07.github.io/r)"
+header: "[index](https://antoine07.github.io/ts)"
 title: "TypeScript — 6 Types littéraux & discriminants"
 ---
 
@@ -100,33 +100,3 @@ type Machine =
 ```
 
 Chaque état a ses champs, et uniquement ceux-là.
-
----
-
-# Exercice A (12 min) — switch exhaustif
-
-1. Crée un type `Route` :
-   - `{ kind: "home" }`
-   - `{ kind: "product"; id: string }`
-   - `{ kind: "checkout" }`
-2. Écris `toPath(route: Route): string`
-3. Ajoute `assertNever` pour l’exhaustivité.
-
----
-
-# Exercice B (10 min) — reducer
-
-Modélise les actions d’un todo :
-- `add` (text)
-- `toggle` (id)
-- `remove` (id)
-
-Puis : écris `reducer(todos, action)` avec un `switch` exhaustif.
-
----
-
-# À retenir
-
-- Les discriminated unions rendent les branches simples et sûres.
-- `switch` + `never` = refactor safe (si ça compile, c’est complet).
-- Excellent pour reducers, state machines, logique métier.

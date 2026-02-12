@@ -3,7 +3,7 @@ marp: true
 theme: default
 paginate: true
 class: lead
-header: "[index](https://antoine07.github.io/r)"
+header: "[index](https://antoine07.github.io/ts)"
 title: "TypeScript — 7 Génériques (intro)"
 ---
 
@@ -95,36 +95,3 @@ function map<T, U>(arr: T[], fn: (item: T) => U): U[] {
 
 const lengths = map(["a", "ab"], (s) => s.length); // number[]
 ```
-
----
-
-# Exercice A (12 min) — `first`
-
-1. Écris `first<T>(arr: T[]): T | undefined`
-2. Écris `last<T>(arr: T[]): T | undefined`
-3. Teste avec :
-   - `number[]`
-   - `string[]`
-   - `{ id: number }[]`
-
----
-
-# Exercice B (10 min) — `pair`
-
-Écris une fonction :
-
-```ts
-pair<A, B>(a: A, b: B): [A, B]
-```
-
-Puis utilise-la pour créer :
-- `[string, number]`
-- `[boolean, { id: string }]`
-
----
-
-# À retenir
-
-- Les génériques sont un outil de réutilisation *sans perdre la précision*.
-- Si `T` n’apporte aucune info → c’est souvent un mauvais signe.
-- L’objectif : garder une DX forte et éviter `any`.

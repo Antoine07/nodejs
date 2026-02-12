@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Installer les dépendances + zod
-RUN npm install && npm install zod
+RUN npm install
 
 # Copier le reste du projet
 COPY . .

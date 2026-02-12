@@ -3,7 +3,7 @@ marp: true
 theme: default
 paginate: true
 class: lead
-header: "[index](https://antoine07.github.io/r)"
+header: "[index](https://antoine07.github.io/ts)"
 title: "TypeScript — 3 Fonctions"
 ---
 
@@ -254,4 +254,4 @@ Parfait — voici une version compacte, claire et directement intégrable en **2
 ---
 
 
-Exercices : `Exercices/
+Exercices : `Exercices/03-functions.md` 

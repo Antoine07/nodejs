@@ -3,7 +3,7 @@ marp: true
 theme: default
 paginate: true
 class: lead
-header: "[index](https://antoine07.github.io/r)"
+header: "[index](https://antoine07.github.io/ts)"
 title: "TypeScript — 5 Unions & narrowing"
 ---
 
@@ -17,7 +17,7 @@ title: "TypeScript — 5 Unions & narrowing"
 - Créer des unions (`A | B`)
 - Réduire (narrow) avec `typeof`, `in`, `===`
 - Modéliser des états impossibles
-- Éviter des erreurs “par design”
+- Éviter des erreurs "par design"
 
 ---
 
@@ -46,7 +46,7 @@ function format(value: string | number) {
 }
 ```
 
-Dans chaque branche, TS “sait” le type exact.
+Dans chaque branche, TS "sait" le type exact.
 
 ---
 
@@ -124,7 +124,7 @@ function render(ui: Ui) {
 
 ---
 
-# Cas d’usage : réponses API
+# Cas d'usage : réponses API
 
 ```ts
 type ApiResult<T> =
@@ -136,33 +136,3 @@ function unwrap<T>(r: ApiResult<T>) {
   return r.data;
 }
 ```
-
----
-
-# Exercice A (12 min) — `ApiResult<T>`
-
-1. Crée `ApiResult<T>` comme ci-dessus.
-2. Écris `mapResult<T, U>(r: ApiResult<T>, fn: (t: T) => U): ApiResult<U>`
-3. Écris un exemple avec :
-   - succès (`data`)
-   - erreur (`error`)
-
----
-
-# Exercice B (10 min) — état UI
-
-Modélise un upload :
-- `idle`
-- `uploading` (progression `0..100`)
-- `done` (url)
-- `error` (message)
-
-Puis : écris une fonction `getBannerText(state): string`.
-
----
-
-# À retenir
-
-- Les unions modélisent “le monde réel” (variable, imprévisible).
-- Le narrowing rend les branches sûres et lisibles.
-- Les états impossibles = moins de bugs, moins de `if` partout.
