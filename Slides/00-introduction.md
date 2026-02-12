@@ -27,19 +27,13 @@ Cette flexibilité entraîne :
 
 ---
 
-## Setup (repo)
+## Docker lancer les conteneurs
 
-Dans ce repo :
-- `Slides/` : sources Markdown des slides
-- `docs/` : sorties HTML (générées)
-- `starter/` : projet Node + TypeScript (exemples / exercices)
-
-Pour générer les slides HTML :
-- `npm run slides:build`
+Téléchargez le starter et lancez le en local, puis travailler avec deux écrans en lançant `dev` et `typecheck`, voir le détails dans les slides qui suivent.
 
 ---
 
-## Setup `starter/` : runtime vs type-check
+## setup `starter/` : runtime vs type-check
 
 Dans `starter/package.json` :
 
@@ -55,6 +49,7 @@ Dans `starter/package.json` :
 
 ---
 
+
 ## Double écran / split VS Code (recommandé)
 
 But : éviter “ça tourne donc c’est bon”.
@@ -65,7 +60,9 @@ But : éviter “ça tourne donc c’est bon”.
   - terminal B : `npm run typecheck`
 - Dans VS Code : split editor + split terminal (même résultat sur un seul écran)
 
-<img src="./images/configuration.png" style="width: 92%;" />
+---
+
+<img src="./images/configuration.png" width="800" />
 
 ---
 
@@ -93,14 +90,30 @@ formatPrice(apiResponse.price);
 Problèmes possibles :
 
 - concaténation au lieu d'addition
-- crash au **runtime**
-- difficile à détecter en QA
+- crash au **runtime** (éxecution du programme)
+- difficile à détecter en tests
 
->Le **runtime** désigne le moment où le programme s'exécute réellement, ainsi que l'environnement dans lequel il s'exécute.
 
 ---
 
-## Bug silencieux : champ optionnel non géré
+## Exemple de version robuste en production en TS
+
+```ts
+function parsePrice(value: string): number {
+  const parsed = Number(value);
+  if (Number.isNaN(parsed)) {
+    throw new Error("Invalid price");
+  }
+  return parsed;
+}
+
+const result = formatPrice(parsePrice(apiResponse.price));
+```
+
+
+---
+
+## Bug silencieux en JS pure : champ optionnel non géré
 
 ```js
 function sendEmail(user) {
@@ -116,6 +129,26 @@ Le bug apparaît :
 
 ---
 
+## Version robuste de l'exemple précédent en TS
+
+```ts
+type User = {
+  email?: string;
+};
+
+
+function sendEmail(user: User): string {
+  if (!user.email) {
+    throw new Error("Email manquant");
+  }
+
+  return user.email.toLowerCase();
+}
+```
+
+
+---
+
 ## Ce que fait TypeScript
 
 TypeScript :
@@ -126,7 +159,7 @@ TypeScript :
   - propriétés manquantes
   - mauvais types
   - incohérences de retour
-- améliore fortement la DX
+- améliore fortement la DX (Developer Experience)
 
 ---
 
@@ -136,7 +169,7 @@ TypeScript :
 
 - ne valide pas les données externes
 - ne remplace pas les tests
-- ne supprime pas les erreurs runtime
+- ne supprime pas les erreurs runtime ( à l'exécution)
 
 Il complète :
 
@@ -175,6 +208,7 @@ Le compilateur fait confiance.
 Les données peuvent mentir.
 
 ---
+
 
 ## Types primitifs
 
@@ -249,6 +283,11 @@ user.email.toLowerCase(); // erreur TS
 
 TypeScript force à gérer l'absence.
 
+Solution (exemple) : 
+```ts
+user.email?.toLowerCase();
+```
+
 ---
 
 ## Fonctions typées
@@ -274,6 +313,50 @@ const add = (a: number, b: number) => a + b;
 ```
 
 Le type de retour est inféré automatiquement.
+
+```ts
+// TypeScript en déduit :
+const add: (a: number, b: number) => number
+```
+
+---
+
+## ✅ Quand on peut dépendre uniquement de l'inférence
+
+Dès que TypeScript voit **la valeur**, il infère très bien.
+
+Cas typiques (code interne) :
+- variables locales initialisées (`const x = ...`)
+- objets/arrays construits sur place
+- transformations (`map`, `filter`, `reduce`)
+- retours “évidents” (une seule forme, pas de branches)
+
+Exemples :
+```ts
+const tags = ["ts", "js"]; // string[]
+const user = { id: 1, name: "Ada" }; // { id: number; name: string }
+const ids = [user].map((u) => u.id); // number[]
+```
+
+Idée : l'inférence est excellente pour le **code local**, pas pour les **frontières**.
+
+---
+
+## ❗ Quand éviter de dépendre uniquement de l'inférence
+
+- quand tu définis un **contrat** :
+  - paramètres de fonctions
+  - types exportés (API publique d'un module)
+  - callbacks/handlers (ce que l'appelant doit fournir)
+- quand l'inférence peut être **trop large** ou **trompeuse** :
+  - tableaux/objets vides (`[]`, `{}`) ⇒ type flou
+  - `let` élargit les littéraux (`"dev"` devient `string`)
+  - unions implicites qui apparaissent via des branches (`string | number | null`)
+- quand tu manipules le **monde réel** :
+  - `JSON.parse`, réponses API, formulaires ⇒ `unknown` jusqu'à validation
+  - `process.env.*` ⇒ `string | undefined` (il faut parser/valider)
+
+En résumé : **inférence pour l'interne**, **annotations + parsing** aux frontières.
 
 ---
 
