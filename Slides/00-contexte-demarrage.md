@@ -92,6 +92,8 @@ But : éviter "ça tourne donc c'est bon".
   - terminal A : `npm run dev`
   - terminal B : `npm run typecheck`
 
+---
+
 <img src="./images/configuration.png" width="800" />
 
 ---
