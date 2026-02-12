@@ -7,22 +7,25 @@ header: "[index](https://antoine07.github.io/r)"
 title: "TypeScript — 2 Types & inférence"
 ---
 
-# 2 — Types & inférence
+# Types & inférence
 ## Comprendre la base sans sur-typer
 
 ---
 
-# Objectif du chapitre
+# Principe fondamental
 
-- Connaître les types primitifs
-- Comprendre l'inférence automatique
-- Savoir quand annoter / quand laisser inférer
-- Distinguer valeurs vs types
-- Utiliser les types littéraux et `as const` (cas réels)
+> TypeScript n'est pas un concours d'annotations.
+> C'est un système de modélisation.
+
+L'objectif :
+- sécurité
+- lisibilité
+- expressivité
+- pas de bruit inutile
 
 ---
 
-# Types primitifs (les essentiels)
+# Types primitifs essentiels
 
 ```ts
 let a: string = "hello";
@@ -36,20 +39,33 @@ let f: bigint = 9007199254740993n;
 let g: symbol = Symbol("id");
 ```
 
+En pratique :
+
+- string, number, boolean → 95% des cas
+- le reste est plus rare
+
 ---
 
 # Tableaux, tuples, objets
 
 ```ts
 const numbers: number[] = [1, 2, 3];
+
 const pair: [string, number] = ["age", 20];
 
-const user: { id: number; name: string } = { id: 1, name: "Ada" };
+const user: { id: number; name: string } = {
+  id: 1,
+  name: "Ada",
+};
 ```
+
+Quand la structure devient importante → créer un `type`.
 
 ---
 
-# Inférence : TypeScript devine souvent mieux que vous
+# L'inférence automatique
+
+TypeScript devine souvent mieux que vous :
 
 ```ts
 const name = "Ada";        // string
@@ -58,47 +74,116 @@ const enabled = true;      // boolean
 const tags = ["ts", "js"]; // string[]
 ```
 
-Annoter ici ajoute du bruit… sans apporter d'info.
+Ajouter :
+
+```ts
+const name: string = "Ada";
+```
+
+➡️ n'apporte rien.
+
+---
+
+# Pourquoi éviter le sur-typage ?
+
+Sur-typer :
+
+- alourdit la lecture
+- rend le code plus fragile au refactor
+- ajoute du bruit sans valeur
+
+Objectif :
+
+> Types utiles > types partout
 
 ---
 
 # Quand annoter ?
 
-Annoter est utile quand :
-- la variable est déclarée sans valeur immédiate
-- le type est un “contrat” public (API, module, lib)
-- l'inférence est trop large (ex: `any`, `unknown`, `string`)
-- on veut documenter une intention (ex: union, littéral)
+Annoter est pertinent si :
+
+- la variable n'a pas de valeur immédiate
+- vous définissez un contrat public
+- l'inférence est trop large
+- vous documentez une intention métier
 
 ---
 
-# Quand NE PAS annoter ?
+# Exemple : valeur sans initialisation
+
+```ts
+let total: number;
+total = 10;
+```
+
+Sans annotation :
+
+```ts
+let total;
+```
+
+➡️ devient `any` si strict désactivé (dangereux)
+
+---
+
+# Contrat public
+
+```ts
+type User = {
+  id: number;
+  email: string;
+};
+
+function createUser(data: User): User {
+  return data;
+}
+```
+
+Ici, l'annotation est essentielle.
+
+---
+
+# Quand ne PAS annoter ?
 
 Éviter :
-- les annotations redondantes
-- les types “évidents” (ex: `const x: number = 1`)
-- les types trop génériques (ex: `object`, `Function`)
 
-Objectif : **types utiles > types partout**.
+```ts
+const x: number = 1;
+const y: string = "hello";
+```
+
+Éviter aussi :
+
+```ts
+let fn: Function;
+let obj: object;
+```
+
+Ces types sont trop génériques pour être utiles.
 
 ---
 
-# Valeurs vs types (une confusion fréquente)
+# Valeurs vs Types
 
 ```ts
 const status = "dev";
+```
 
-// status est une *valeur*
-// "dev" peut aussi être un *type littéral*
+- `status` → valeur (runtime)
+
+```ts
 type Env = "dev" | "prod";
 ```
 
-- Valeur : existe au runtime
-- Type : existe uniquement au type-check
+- `Env` → type (compile-time)
+
+Important :
+
+> Les types n'existent pas au runtime.
 
 ---
 
-# Types littéraux (très utiles)
+# Types littéraux
 
 ```ts
 type Env = "dev" | "staging" | "prod";
@@ -109,23 +194,30 @@ function getApiBaseUrl(env: Env) {
 }
 ```
 
-Avantage : *impossible* d'appeler `getApiBaseUrl("production")` par erreur.
+Avantage :
+
+- Impossible d'écrire `"production"` par erreur.
 
 ---
 
-# Piège : l'inférence “élargit” parfois trop
+# Inference subtile : const vs let
 
 ```ts
 const env = "dev";
-// env: string (souvent) ? Non : ici, env est "dev" (const).
+// type = "dev"
 
 let env2 = "dev";
-// env2: string (car let => variable modifiable)
+// type = string
 ```
+
+Pourquoi ?
+
+- `const` → valeur figée
+- `let` → variable modifiable
 
 ---
 
-# `as const` : figer une config
+# `as const` : figer une configuration
 
 ```ts
 const config = {
@@ -134,30 +226,39 @@ const config = {
     newCheckout: true,
   },
 } as const;
-
-// config.env a le type "dev" (et pas string)
-// config.features.newCheckout a le type true (et pas boolean)
 ```
 
-Cas d'usage : config, états, flags, routes.
+Effet :
+
+- `env` devient type `"dev"`
+- `newCheckout` devient type `true`
+
+Très utile pour :
+
+- configs
+- routes
+- états
+- mapping constants
 
 ---
 
-# Exemple : états UI avec littéraux
+# Exemple : états UI robustes
 
 ```ts
 type UiState = "idle" | "loading" | "success" | "error";
 
 let state: UiState = "idle";
 state = "loading";
-// state = "loaded"; // erreur : "loaded" n'existe pas
+// state = "loaded"; ❌ erreur
 ```
+
+Les union types éliminent toute classe d'erreurs.
 
 ---
 
-# Exercice A (8 min) — inférence
+# Exercice — Inference
 
-Pour chaque ligne, écris le type inféré :
+Pour chaque ligne, donne le type inféré :
 
 ```ts
 const n = 10;
@@ -167,40 +268,25 @@ const mixed = [1, "a"];
 const user = { id: 1, name: "Ada" };
 ```
 
-Puis : lesquelles méritent une annotation, et pourquoi ?
+Puis :
+
+- lesquelles méritent une annotation ?
+- pourquoi ?
 
 ---
 
-# Exercice B (10 min) — config
+# Exercice — Config robuste
 
-Écris une config typée pour :
+Créer une config avec :
+
 - `env`: `"dev" | "prod"`
 - `logLevel`: `"debug" | "info" | "warn" | "error"`
 - `features`: `{ newCheckout: boolean; betaBanner: boolean }`
 
-Objectif : éviter `string` partout, et garder l'autocomplétion.
+Objectif :
 
----
+- éviter `string`
+- garder autocomplétion
+- éviter les valeurs invalides
 
-# Correction (extraits)
-
-```ts
-type Env = "dev" | "prod";
-type LogLevel = "debug" | "info" | "warn" | "error";
-
-const config = {
-  env: "dev" as Env,
-  logLevel: "debug" as LogLevel,
-  features: { newCheckout: true, betaBanner: false },
-};
-```
-
-Alternative souvent meilleure : `as const` + extraction de types (chapitres suivants).
-
----
-
-# À retenir
-
-- L'inférence est votre alliée : n'ajoutez pas du bruit.
-- Annoter = utile quand on définit un contrat, pas quand on répète.
-- Littéraux + `as const` rendent les configs et états robustes.
+Donnez un cas d'usage

@@ -7,7 +7,41 @@ header: "[index](https://antoine07.github.io/r)"
 title: "TypeScript — 1 Introduction"
 ---
 
-# 1 — Introduction
+#  Introduction
+
+## Brève introduction historique 1/3
+
+TypeScript est créé en 2012 chez Microsoft, sous l'impulsion d'Anders Hejlsberg (également créateur de C#).
+
+Objectif initial :
+
+> Apporter de la structure et de la sécurité à JavaScript pour des applications de grande taille.
+
+---
+
+## Brève introduction historique 2/3
+
+À l'époque :
+
+- JavaScript devient dominant (Node.js, frameworks front)
+- Les applications grossissent
+- Les bugs liés au typage dynamique deviennent coûteux
+
+TypeScript propose alors :
+
+- un sur-ensemble de JavaScript
+- compatible à 100 %
+- compilé en JavaScript standard
+
+---
+
+## Brève introduction historique 3/3
+
+Aujourd'hui, TypeScript est devenu le standard de fait pour le développement JavaScript professionnel.
+
+---
+
+
 ## Pourquoi TypeScript ?
 
 JavaScript est :
@@ -451,56 +485,8 @@ TypeScript est :
 
 ## Exercice 1 — Identifier les bugs
 
-Donnez 3 exemples de bugs silencieux déjà rencontrés :
+Donnez 1 exemples de bugs silencieux.
 
 - TypeScript peut-il aider ?
 - Si non, que faut-il ajouter ?
 
----
-
-## Exercice 2 — Corriger le type
-
-```ts
-type Product = {
-  id: number;
-  price: number;
-};
-```
-
-L'API renvoie parfois `price: string`.
-Proposez une solution correcte.
-
----
-
-## Exercice 3 — Supprimer `any`
-
-```ts
-function process(data: any) {
-  return data.value.toUpperCase();
-}
-```
-
-- remplacez `any`
-- sécurisez l'accès à `value`
-
----
-
-## Exercice 4 — Union type
-
-Créez un type pour l'état d'un formulaire :
-
-- idle
-- loading
-- success
-- error
-
-Implémentez une fonction `render`.
-
----
-
-## Exercice 5 — Refactor contrôlé
-
-Ajoutez une propriété `role` à un type `User` :
-
-- `"admin"` | `"user"`
-- identifiez les impacts dans le code

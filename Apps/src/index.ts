@@ -39,16 +39,15 @@ console.log("ici", v)
 console.log(v.price.toFixed(2));
 
 
-try{
-    let name: string = "Alice";
-    name = null; // ❌ erreur
-}catch(e){
-}
+// try{
+//     let name: string = "Alice";
+//     name = null; // ❌ erreur
+// }catch(e){
+// }
 
 
 type Role = "dev" | "admin";
 let role = "dev";
 function setRole(r: Role) {}
-setRole(role); // ❌ erreur
-
+// setRole(role); // ❌ erreur
 

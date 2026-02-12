@@ -3,13 +3,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "typecheck" : "tsc --watch --pretty",
+      "dev": "concurrently \"tsx watch src/index.ts\" \"tsx watch src/Exercices/index.ts\"",
+    "typecheck": "tsc --watch --pretty",
     "build": "tsc",
     "start": "node dist/index.js"
   },
   "devDependencies": {
-    "typescript": "^5.5.0",
-    "tsx": "^4.7.0"
+    "concurrently": "^9.2.1",
+    "tsx": "^4.7.0",
+    "typescript": "^5.5.0"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
   }
 }

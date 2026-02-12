@@ -8,7 +8,7 @@ title: "TypeScript — 3 Fonctions"
 ---
 
 # 3 — Fonctions
-## Le “contrat” : entrées → sortie
+## Le "contrat" : entrées → sortie
 
 ---
 
@@ -47,8 +47,23 @@ function toSlug(value: string) {
 
 Annoter le retour peut être utile :
 - pour un contrat public
-- pour éviter une union “surprise”
+- pour éviter une union "surprise" (voir la slide qui suit pour un rappel)
 - pour documenter une intention
+
+---
+
+## Point technique rappel
+
+Ici TypeScript infère une union de types `(flag: boolean) => string | number`
+
+```ts
+function getLabel(flag: boolean) {
+  if (flag) {
+    return "admin";
+  }
+  return 0;
+}
+```
 
 ---
 
@@ -75,7 +90,7 @@ function greet(name?: string) {
 }
 ```
 
-`?` signifie : “peut être absent”.
+`?` signifie : "peut être absent".
 
 ---
 
@@ -91,21 +106,42 @@ Ici, `page` et `pageSize` sont `number`.
 
 ---
 
-# Objets d'options (pattern très courant)
+## Objet nommé 
 
 ```ts
-type FetchUsersOptions = {
-  limit?: number;
-  search?: string;
-  activeOnly?: boolean;
+type FetchMoviesOptions = {
+  userId: number;                    // obligatoire
+  page: number;                      // obligatoire
+  sortBy: "rating" | "releaseDate";  // obligatoire
+
+  search?: string;                   // optionnel
+  genre?: "action" | "drama" | "comedy" | "thriller";
+  pageSize?: number;                 // optionnel
 };
 
-function fetchUsers(options: FetchUsersOptions = {}) {
-  const limit = options.limit ?? 20;
-  const search = options.search ?? "";
-  const activeOnly = options.activeOnly ?? false;
-  return { limit, search, activeOnly };
+function fetchMovies({
+  userId,
+  page,
+  sortBy,
+  search,
+  genre,
+  pageSize = 20,
+}: FetchMoviesOptions) {
+  return { userId, page, sortBy, search, genre, pageSize };
 }
+```
+
+---
+
+### Appel clair
+
+```ts
+fetchMovies({
+  userId: 42,
+  page: 1,
+  sortBy: "rating",
+  genre: "drama",
+});
 ```
 
 ---
@@ -124,92 +160,98 @@ Cas d'usage : handlers, callbacks, utilities.
 
 ---
 
-# Fonctions comme valeurs : callbacks
+# Fonctions comme valeurs 
+
+Quand un utilisateur note un film, on veut exécuter une action après succès.
 
 ```ts
-function onClick(handler: (event: { x: number; y: number }) => void) {
-  handler({ x: 10, y: 20 });
+type Rating = {
+  movieId: number;
+  userId: number;
+  score: number;
+};
+
+function rateMovie(
+  rating: Rating,
+  onSuccess: (data: { average: number }) => void
+) {
+  const result = { average: 4.2 };
+  onSuccess(result);
 }
-
-onClick((e) => {
-  console.log(e.x, e.y);
-});
 ```
-
-Le typage du callback donne l'autocomplétion à l'appelant.
 
 ---
 
-# Exemple “API handler”
+## Utilisation
+
+```ts
+rateMovie(
+  { movieId: 1, userId: 42, score: 5 },
+  (data) => {
+    console.log(data.average);
+  }
+);
+```
+
+---
+
+## Ce que TypeScript garantit
+
+- `data.average` est un `number`
+- impossible d'accéder à une propriété inexistante
+- contrat clair entre la logique métier et l'UI
+
+---
+
+> Le typage du callback définit précisément ce que la fonction renvoie à l'appelant.
+
+---
+
+# Exemple "API handler"
+
+🏷️ Définition : une API handler est une fonction qui : reçoit une requête (request) et et retourne une réponse (response)
 
 ```ts
 type HttpMethod = "GET" | "POST";
 
-type Request = { method: HttpMethod; body?: unknown };
-type Response = { status: number; json: (data: unknown) => void };
+type Request = {
+  method: HttpMethod;
+  body?: unknown; // donnée externe
+};
+
+type Response = {
+  status: number;
+  json: (data: unknown) => void;
+};
 
 type Handler = (req: Request) => Promise<Response> | Response;
 ```
 
-Même dans un projet sans framework, ces types structurent la logique.
+---
+
+## Ce que ces types apportent
+
+- `HttpMethod` limite les valeurs possibles
+- `Request` structure l'entrée
+- `Response` impose une forme cohérente
+- `Handler` définit un contrat clair (sync ou async)
 
 ---
 
-# Exercice A (10 min) — contrat clair
+## Pourquoi c'est important
 
-Écris une fonction :
-- `normalizeEmail(email: string): string`
-- elle doit `trim()`, `toLowerCase()`
-- elle doit refuser une entrée vide (choisis une stratégie)
+Même sans framework :
 
-Contraintes :
-- si tu choisis “refuser” via erreur : quel est le type de retour ?
-- si tu choisis “refuser” via `null` : quel est le type de retour ?
+- l'architecture est explicite
+- les responsabilités sont claires
+- les frontières (body: unknown) sont identifiées
+
+> Les types structurent la logique avant même d'écrire l'implémentation.
+
+---
+Parfait — voici une version compacte, claire et directement intégrable en **2 slides**.
 
 ---
 
-# Exercice B (12 min) — options
 
-Écris une fonction :
-
-```ts
-createUser(options)
-```
-
-Avec :
-- `name` obligatoire
-- `email` obligatoire
-- `role` optionnel (`"admin" | "user"`, par défaut `"user"`)
-- `newsletter` optionnel (par défaut `false`)
-
-Objectif : *pas de paramètre positionnel fragile*.
-
----
-
-# Correction (extrait)
-
-```ts
-type Role = "admin" | "user";
-type CreateUserOptions = {
-  name: string;
-  email: string;
-  role?: Role;
-  newsletter?: boolean;
-};
-
-function createUser(options: CreateUserOptions) {
-  return {
-    ...options,
-    role: options.role ?? "user",
-    newsletter: options.newsletter ?? false,
-  };
-}
-```
-
----
-
-# À retenir
-
-- Une fonction = un contrat : entrées typées → sortie typée.
-- Les options en objet évitent les signatures “impossibles à lire”.
-- Les callbacks typés donnent de la DX (et évitent des bugs).
+Exercices : `Exercices/

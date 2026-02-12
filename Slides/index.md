@@ -10,6 +10,9 @@ title: "Cours TypeScript — Index"
 # Cours TypeScript
 ## Support de cours (slides)
 
+Site: https://antoine07.github.io/ts
+Dépôt: https://github.com/Antoine07/ts
+
 ---
 
 # Plan
@@ -33,16 +36,3 @@ title: "Cours TypeScript — Index"
 11. [Tooling & workflow](./11-tooling-workflow.html)
 12. [Bonnes pratiques & anti-patterns](./12-bonnes-pratiques.html)
 13. [Mise en pratique / TP fil rouge](./13-tp-fil-rouge.html)
-
----
-
-# Build (HTML)
-
-Pré-requis : Node.js.
-
-1. Installer les dépendances à la racine :
-   - `npm install`
-2. Générer le HTML dans `docs/` :
-   - `npm run slides:build`
-3. Lancer un serveur Marp (optionnel) :
-   - `npm run slides:watch`
