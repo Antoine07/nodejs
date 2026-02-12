@@ -331,7 +331,9 @@ Cas typiques (code interne) :
 - transformations (`map`, `filter`, `reduce`)
 - retours “évidents” (une seule forme, pas de branches)
 
-Exemples :
+---
+
+## Exemples :
 ```ts
 const tags = ["ts", "js"]; // string[]
 const user = { id: 1, name: "Ada" }; // { id: number; name: string }
@@ -342,7 +344,7 @@ Idée : l'inférence est excellente pour le **code local**, pas pour les **front
 
 ---
 
-## ❗ Quand éviter de dépendre uniquement de l'inférence
+## ❗ Quand éviter de dépendre uniquement de l'inférence 1/2
 
 - quand tu définis un **contrat** :
   - paramètres de fonctions
@@ -352,13 +354,17 @@ Idée : l'inférence est excellente pour le **code local**, pas pour les **front
   - tableaux/objets vides (`[]`, `{}`) ⇒ type flou
   - `let` élargit les littéraux (`"dev"` devient `string`)
   - unions implicites qui apparaissent via des branches (`string | number | null`)
+
+---
+
+## ❗ Quand éviter de dépendre uniquement de l'inférence 2/2
+
 - quand tu manipules le **monde réel** :
   - `JSON.parse`, réponses API, formulaires ⇒ `unknown` jusqu'à validation
   - `process.env.*` ⇒ `string | undefined` (il faut parser/valider)
 
-En résumé : **inférence pour l'interne**, **annotations + parsing** aux frontières.
-
 ---
+
 
 ## Tableaux et génériques
 
