@@ -3,10 +3,11 @@ marp: true
 theme: default
 paginate: true
 class: lead
-header: "[index](https://antoine07.github.io/r)"
+header: "[index](https://antoine07.github.io/ts)"
+title: "Node.js — HTTP (node:http)"
 ---
 
-# 11 — Node.js
+#  Node.js
 ## Le module `node:http` (serveur HTTP)
 
 ---
@@ -49,30 +50,28 @@ En pratique, ce sont des conventions : votre API doit être cohérente.
 
 ---
 
-## Créer un serveur HTTP (TypeScript)
-
-Exemple minimal (ESM) :
+## Créer un serveur HTTP  - Testez ce code dans Docker
 
 ```ts
-import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
+import { createServer, type IncomingMessage, type ServerResponse } from "node:http"
 
 function sendJson(res: ServerResponse, status: number, data: unknown) {
-  res.writeHead(status, { "content-type": "application/json; charset=utf-8" });
-  res.end(JSON.stringify(data));
+    res.writeHead(status, { "content-type": "application/json; charset=utf-8" });
+    res.end(JSON.stringify(data));
 }
 
 const server = createServer((req: IncomingMessage, res: ServerResponse) => {
-  const method = req.method ?? "GET";
-  const url = req.url ?? "/";
+    const method = req.method ?? "GET";
+    const url = req.url ?? "/";
 
-  if (method === "GET" && url === "/health") {
-    return sendJson(res, 200, { ok: true });
-  }
+    if (method === "GET" && url === "/health") {
+        return sendJson(res, 200, { ok: true });
+    }
 
-  return sendJson(res, 404, { ok: false, error: "Not found" });
+    return sendJson(res, 404, { ok: false, error: "Not found" });
 });
 
-server.listen(3000, () => console.log("http://localhost:3000"));
+server.listen(3000, "0.0.0.0", () => console.log("http://localhost:3000"));
 ```
 
 ---
@@ -121,7 +120,7 @@ if (method === "GET" && requestUrl.pathname === "/movies") {
 
 ---
 
-## Et pour `POST` ?
+## `POST` 
 
 Pour `POST/PUT/PATCH`, il faut lire le body :
 - streaming (`req.on("data")`)

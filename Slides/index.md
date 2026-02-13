@@ -15,7 +15,7 @@ Dépôt: https://github.com/Antoine07/ts
 
 ---
 
-# Plan
+# Plan 1/3
 
 - [Contexte de démarrage (Docker + starter)](./00-contexte-demarrage.html)
 - [Introduction : pourquoi TypeScript ?](./01-introduction.html)
@@ -26,8 +26,16 @@ Dépôt: https://github.com/Antoine07/ts
 
 ---
 
-# Plan (suite)
+# Plan 2/3
 
 - [Génériques (intro)](./07-generiques-intro.html)
 - [Contraintes : `extends`](./08-contraintes-extends.html)
 - [`keyof` et accès dynamique](./09-keyof-acces-dynamique.html)
+
+---
+
+# Plan 3/3
+
+- [Node.js — Introduction (Node 24)](./node-10-introduction.html)
+- [Node.js — Module `http`](./node-11-http.html)
+- [Node.js — Connexion PostgreSQL (`pg`)](./node-12-db.html)

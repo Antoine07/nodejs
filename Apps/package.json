@@ -6,6 +6,7 @@
     "typecheck": "tsc --watch --pretty",
     "exo": "tsx watch src/Exercices/index.ts",
     "cart" : "tsx watch src/Cart/Application/index.ts",
+    "movie": "tsx watch src/Movie/server.ts",
     "dev" : "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js"

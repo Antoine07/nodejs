@@ -30,7 +30,47 @@ On utilise le dossier `starter/` comme terrain de jeu :
 
 ---
 
+### 🎓 Pourquoi monter `/app/node_modules` dans Docker ?
+
+Quand on monte le code local :
+
+```
+- .:/app
+```
+
+Docker remplace tout le dossier `/app` du container
+➡️ y compris `node_modules`
+
+Résultat : les dépendances installées lors du build disparaissent.
+
+---
+
+#### ✅ Solution
+
+Ajouter un volume dédié :
+
+```
+- /app/node_modules
+```
+
+---
+
+####  Effet
+
+- Le code vient de votre machine
+- Les dépendances restent dans le container
+- Aucun conflit OS / version Node
+- Pas d'écrasement au démarrage
+
+---
+
+👉 En dev : code synchronisé + dépendances protégées.
+
+---
+
 ## Dans le dossier stater
+
+Vérifiez que la version de votre `node` local est bien la même que dans votre conteneur.
 
 ```bash
 cd starter

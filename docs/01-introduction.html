@@ -108,6 +108,9 @@
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">sendEmail</span>(<span class="hljs-params">user</span>) {
   <span class="hljs-keyword">return</span> user.<span class="hljs-property">email</span>.<span class="hljs-title function_">toLowerCase</span>();
 }
+
+<span class="hljs-title function_">sendEmail</span>({ <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;John&quot;</span> })
+<span class="hljs-title function_">sendEmail</span>({ <span class="hljs-attr">email</span>: <span class="hljs-number">12345</span> })
 </code></pre>
 <p>Le bug apparaît :</p>
 <ul>
@@ -115,6 +118,7 @@
 <li>avec un compte incomplet</li>
 <li>sur un cas marginal</li>
 </ul>
+<p>Et si vous ajoutez <code>user.email?.toLowerCase()</code>, ça n'arrange rien.</p>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="10" data-paginate="true" data-class="lead" data-header="[index](https://antoine07.github.io/ts)" data-theme="default" lang="C" class="lead" data-marpit-pagination="10" style="--paginate:true;--class:lead;--header:[index](https://antoine07.github.io/ts);--theme:default;" data-marpit-pagination-total="38">
 <header><a href="https://antoine07.github.io/ts">index</a></header>
@@ -438,7 +442,7 @@ user.<span class="hljs-property">email</span>?.<span class="hljs-title function_
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="38" data-paginate="true" data-class="lead" data-header="[index](https://antoine07.github.io/ts)" data-theme="default" lang="C" class="lead" data-marpit-pagination="38" style="--paginate:true;--class:lead;--header:[index](https://antoine07.github.io/ts);--theme:default;" data-marpit-pagination-total="38">
 <header><a href="https://antoine07.github.io/ts">index</a></header>
-<h2 id="exercice-1--identifier-les-bugs">Exercice 1 — Identifier les bugs</h2>
+<h2 id="identifier-les-bugs">Identifier les bugs</h2>
 <p>Donnez 1 exemples de bugs silencieux.</p>
 <ul>
 <li>TypeScript peut-il aider ?</li>

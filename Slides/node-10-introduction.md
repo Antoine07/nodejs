@@ -3,7 +3,8 @@ marp: true
 theme: default
 paginate: true
 class: lead
-header: "[index](https://antoine07.github.io/r)"
+header: "[index](https://antoine07.github.io/ts)"
+title: "Node.js — 10 Introduction (Node 24)"
 ---
 
 # 10 — Node.js (Node 24)
