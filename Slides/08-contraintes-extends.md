@@ -3,7 +3,7 @@ marp: true
 theme: default
 paginate: true
 class: lead
-header: "[index](https://antoine07.github.io/r)"
+header: "[index](https://antoine07.github.io/ts)"
 title: "TypeScript — 8 Contraintes : extends"
 ---
 
@@ -40,20 +40,23 @@ echo("hello"); // ok
 Sans contrainte :
 ```ts
 function lengthOf<T>(value: T) {
-  return value.length; // erreur : T n’a pas forcément length
+  return value.length; // erreur : T n'a pas forcément length
 }
 ```
 
 Avec contrainte :
+
 ```ts
 function lengthOf<T extends { length: number }>(value: T) {
   return value.length;
 }
 ```
 
+*T peut être n'importe quel type, à condition qu'il possède une propriété length de type number.*
+
 ---
 
-# Contraindre sur une forme d’objet
+# Contraindre sur une forme d'objet
 
 ```ts
 function byId<T extends { id: number }>(arr: T[], id: number): T | undefined {
@@ -62,6 +65,24 @@ function byId<T extends { id: number }>(arr: T[], id: number): T | undefined {
 ```
 
 Le helper devient réutilisable, mais reste sûr.
+
+---
+
+## 🎯 Pourquoi c'est puissant
+
+>La fonction marche pour tout type ayant un id.
+
+```ts
+type User = { id: number; name: string };
+type Product = { id: number; price: number };
+
+const user = byId<User>(users, 1);
+const product = byId<Product>(products, 42);
+
+byId([{ name: "A" }], 1); // erreur 
+```
+
+Remarque vous n'êtes pas obligé de préciser le T explicitement, mais le type inféré doit satisfaire la contrainte `T extends { id: number }`.
 
 ---
 
@@ -82,47 +103,10 @@ const r = merge({ id: 1 }, { name: "Ada" }); // { id: number } & { name: string 
 Restreindre quand :
 - vous utilisez une propriété/méthode sur `T`
 - vous voulez limiter les entrées valides
-- vous voulez améliorer le message d’erreur
-
-Ne restreignez pas “par réflexe” : ça peut rendre les APIs rigides.
+- vous voulez améliorer le message d'erreur
 
 ---
 
-# Exercice A (12 min) — `withId`
+# Exercice
 
-Écris :
-
-```ts
-withId<T extends { id: string }>(value: T): T
-```
-
-Objectif : accepter n’importe quel objet qui a `id: string`, et le retourner.
-
-Puis : crée 2 types et teste :
-- `User { id: string; name: string }`
-- `Order { id: string; total: number }`
-
----
-
-# Exercice B (12 min) — `pickLonger`
-
-Écris :
-
-```ts
-pickLonger<T extends { length: number }>(a: T, b: T): T
-```
-
-Elle retourne l’argument qui a la plus grande `length`.
-
-Test :
-- strings
-- arrays
-- objets `{ length: number; value: ... }`
-
----
-
-# À retenir
-
-- `extends` borne un générique : “T doit avoir…”
-- Ce n’est pas de l’héritage : c’est une contrainte.
-- Contraindre = plus de sécurité + meilleure DX.
+Créer une fonction `wrap` qui encapsule une valeur dans un objet et `unwrap` 

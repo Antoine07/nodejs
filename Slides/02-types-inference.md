@@ -3,7 +3,7 @@ marp: true
 theme: default
 paginate: true
 class: lead
-header: "[index](https://antoine07.github.io/r)"
+header: "[index](https://antoine07.github.io/ts)"
 title: "TypeScript — 2 Types & inférence"
 ---
 
@@ -277,16 +277,15 @@ Puis :
 
 # Exercice — Config robuste
 
-Créer une config avec :
+1. Déclarez un type `Env` = `"dev" | "prod"`.
+2. Déclarez un type `LogLevel` = `"debug" | "info" | "warn" | "error"`.
+3. Déclarez un type `AppConfig` contenant `env`, `logLevel` et `features` (`newCheckout`, `betaBanner`).
+4. Créez une constante `config` correctement typée.
+5. Vérifiez que `env: "production"` provoque une erreur TypeScript.
 
-- `env`: `"dev" | "prod"`
-- `logLevel`: `"debug" | "info" | "warn" | "error"`
-- `features`: `{ newCheckout: boolean; betaBanner: boolean }`
+*features = interrupteurs métier contrôlés par configuration.*
 
-Objectif :
+1. `newCheckout` → Active le nouveau processus de paiement à la place de l'ancien.
+2. `betaBanner` → Affiche une bannière indiquant que l'application est en version bêta.
 
-- éviter `string`
-- garder autocomplétion
-- éviter les valeurs invalides
-
-Donnez un cas d'usage
+Objectif : zéro `string`, zéro `any`, autocomplétion active.

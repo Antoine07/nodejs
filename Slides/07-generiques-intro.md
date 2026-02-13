@@ -3,11 +3,11 @@ marp: true
 theme: default
 paginate: true
 class: lead
-header: "[index](https://antoine07.github.io/r)"
+header: "[index](https://antoine07.github.io/ts)"
 title: "TypeScript — 7 Génériques (intro)"
 ---
 
-# 7 — Génériques (intro)
+# Génériques (intro)
 ## Réutiliser sans perdre le typage
 
 ---
@@ -64,6 +64,8 @@ const b = wrap(123); // { value: number }
 
 # Anti-pattern : générique inutile
 
+`Ici T est inutile car il ne lie pas l'entrée à la sortie. De plus il n'est pas contraint (notion qu'on verra plus loin). Le typage ici ajoute du bruit...`.
+
 ```ts
 // Mauvais : T ne sert à rien (on ne le réutilise pas)
 function logValue<T>(value: T): void {
@@ -80,7 +82,7 @@ function logValue(value: unknown): void {
 
 ---
 
-# Message clé
+# à retenir
 
 **Un générique doit servir à préserver une information.**
 

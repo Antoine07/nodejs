@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --watch --pretty",
-    "dev": "tsx watch src/Exercices/index.ts",
+    "exo": "tsx watch src/Exercices/index.ts",
     "cart" : "tsx watch src/Cart/Application/index.ts",
-    "exo" : "tsx watch src/index.ts",
+    "dev" : "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js"
   },
