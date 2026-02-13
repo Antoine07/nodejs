@@ -3,7 +3,7 @@ marp: true
 theme: default
 paginate: true
 class: lead
-header: "[index](https://antoine07.github.io/ts)"
+header: "[index](https://antoine07.github.io/r)"
 title: "TypeScript — 8 Contraintes : extends"
 ---
 

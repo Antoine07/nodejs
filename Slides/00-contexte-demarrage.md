@@ -3,7 +3,7 @@ marp: true
 theme: default
 paginate: true
 class: lead
-header: "[index](https://antoine07.github.io/ts)"
+header: "[index](https://antoine07.github.io/r)"
 title: "TypeScript — 0 Contexte de démarrage"
 ---
 
@@ -119,4 +119,3 @@ But : éviter "ça tourne donc c'est bon".
 - **Toujours** laisser `typecheck` tourner pendant les exercices
 - Typer d'abord les **frontières** (inputs/outputs), pas chaque variable
 - Si une donnée vient de l'extérieur : `unknown` jusqu'à validation
-

@@ -3,7 +3,7 @@ marp: true
 theme: default
 paginate: true
 class: lead
-header: "[index](https://antoine07.github.io/ts)"
+header: "[index](https://antoine07.github.io/r)"
 title: "TypeScript — 1 Introduction"
 ---
 
@@ -111,6 +111,9 @@ const result = formatPrice(parsePrice(apiResponse.price));
 function sendEmail(user) {
   return user.email.toLowerCase();
 }
+
+sendEmail({ name: "John" })
+sendEmail({ email: 12345 })
 ```
 
 Le bug apparaît :
@@ -118,6 +121,8 @@ Le bug apparaît :
 - après une migration
 - avec un compte incomplet
 - sur un cas marginal
+
+Et si vous ajoutez `user.email?.toLowerCase()`, ça n'arrange rien.
 
 ---
 
@@ -483,10 +488,9 @@ TypeScript est :
 
 ---
 
-## Exercice 1 — Identifier les bugs
+##  Identifier les bugs
 
 Donnez 1 exemples de bugs silencieux.
 
 - TypeScript peut-il aider ?
 - Si non, que faut-il ajouter ?
-
