@@ -142,3 +142,7 @@ type User = {
 ```
 
 Souvent, on **sépare** DTO (API) et modèle métier (app).
+
+---
+
+`TPs/tp-cart.md`

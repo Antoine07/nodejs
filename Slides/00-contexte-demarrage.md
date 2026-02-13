@@ -30,7 +30,7 @@ On utilise le dossier `starter/` comme terrain de jeu :
 
 ---
 
-## Sans Docker — Local 
+## Dans le dossier stater
 
 ```bash
 cd starter
@@ -49,7 +49,7 @@ npm run typecheck
 
 ---
 
-## Avec Docker 
+## Dans le dossier starter : Docker 
 
 Depuis `starter/` :
 
@@ -65,7 +65,22 @@ docker exec -it node-ts sh
 
 Puis (dans le conteneur) spliter votre terminal
 - `npm run dev`
+- `npm run exo`
 - `npm run typecheck`
+
+---
+
+## Quelques commandes Docker utiles
+
+`docker compose down -v` → Arrête les containers et supprime aussi les volumes (donc les données persistées).
+
+`docker compose build --no-cache` → Reconstruit les images Docker sans utiliser le cache.
+
+`docker compose up -d` → Lance les services définis dans le docker-compose en tache de fond.
+
+`docker system prune -a` → Supprime containers arrêtés, images inutilisées et cache Docker.
+
+`docker volume prune` → Supprime tous les volumes Docker non utilisés (perte possible de données).
 
 ---
 
@@ -74,13 +89,14 @@ Puis (dans le conteneur) spliter votre terminal
 Dans `starter/package.json` :
 
 ```json
-"dev": "tsx watch src/index.ts",
-"typecheck": "tsc --watch --pretty  src/index.ts"
+"exo": "tsx watch src/Exercices/index.ts",
+"dev" : "tsx watch src/index.ts",
+"typecheck": "tsc --watch --pretty  src/index.ts",
 ```
 
 - `dev` exécute le programme (ça peut "tourner" même si le typage est mauvais)
 - `typecheck` empêche de se mentir : erreurs TS visibles immédiatement
-
+- `exo`  exécute le programme
 ---
 
 ## Double écran / split VS Code (recommandé)
