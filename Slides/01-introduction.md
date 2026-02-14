@@ -103,7 +103,7 @@ const result = formatPrice(parsePrice(apiResponse.price));
 
 ---
 
-## Bug silencieux : champ optionnel non géré
+## Bug silencieux en JS : champ optionnel non géré
 
 ```js
 function sendEmail(user) {
@@ -244,28 +244,32 @@ try {
 
 ---
 
-## 🧱 Frontière du système
+## Frontière du système
 
 Deux mondes :
 
-**Interne (contrôlé)**
+**Interne contrôlé en TS**
 
 - fonctions
 - variables locales
 - transformations
 
-**Externe (incertain)**
+---
+
+**Externe incertain => zod**
 - API
 - JSON.parse
 - formulaires
 - process.env
 
-TypeScript protège très bien le monde interne.
+---
+
+>TypeScript protège très bien le monde interne.
 Le monde externe doit être validé.
 
 ---
 
-## Solution robuste en production
+## Exemple de zod - validation externe
 
 ```ts
 import { z } from "zod";
@@ -274,13 +278,14 @@ const Schema = z.object({
   price: z.coerce.number(),
 });
 
+// parse() lance une exception si invalide
+// safeParse() retourne un objet { success }
 const value = Schema.parse(JSON.parse('{"price":"12.50"}'));
 
 value.price.toFixed(2);
 ```
 
-> TypeScript vérifie votre code.
-> Zod vérifie vos données.
+> Zod valide et transforme les données externes.
 
 ---
 
@@ -292,7 +297,7 @@ let name: string = "Alice";
 let active: boolean = true;
 ```
 
-La gestion des `null` et `undefined` par rapport à notre configuration `tsconfig` est strict. 
+Dans la configuration de `tsconfig.json` on a `"strict": true`. Donc null et undefined ne sont pas acceptés implicitement.
 
 ```ts
 active = null ; // erreur typescript 
@@ -325,6 +330,15 @@ let data: unknown;
 if (typeof data === "string") {
   data.toUpperCase();
 }
+```
+
+```ts
+let data: unknown;
+
+data = 1;
+
+// ❌ Erreur car pas de vérification
+data.toFixed(2);
 ```
 
 ---
@@ -393,11 +407,13 @@ const user = { id: 1, name: "Ada" };
 const ids = [user].map((u) => u.id);
 ```
 
-Mais aux frontières, il faut être explicite et valider.
+Mais aux frontières, il faut être explicite et valider. Une frontière est l'endroit où votre code rencontre quelque chose qu'il ne contrôle pas.
 
 ---
 
-## Limites de l'inférence
+## Limites de l'inférence 
+
+**On en reparlera plus loin dans le cours.**
 
 - contrats publics
 - objets vides
@@ -411,7 +427,7 @@ Mais aux frontières, il faut être explicite et valider.
 ```ts
 type Role = "dev" | "admin";
 
-let role = "dev";
+let role = "dev"; // string pas de type Role
 
 function setRole(r: Role) {}
 
@@ -421,7 +437,7 @@ setRole(role); // ❌
 Solution :
 
 ```ts
-const role = "dev";
+const role = "dev"; // le type est Role maintenant
 ```
 
 ---
@@ -442,15 +458,7 @@ TypeScript combine les types possibles.
 
 ---
 
-## null et strictNullChecks
-
-```ts
-let value: string = null; // interdit en strict mode
-```
-
----
-
-## Exemple API réaliste
+## Exemple API réaliste - non externe
 
 ```ts
 type ApiUser = {
@@ -468,7 +476,7 @@ if (user.email !== null) {
 ## TypeScript remplace quoi ?
 
 - documentation obsolète
-- QA manuelle
+- QA manuelle (Quality Assurance)
 - tests triviaux
 
 ---

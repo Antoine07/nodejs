@@ -49,17 +49,45 @@ En pratique :
 # Tableaux, tuples, objets
 
 ```ts
+// tableau
 const numbers: number[] = [1, 2, 3];
 
+// tuple
 const pair: [string, number] = ["age", 20];
 
+// objet
 const user: { id: number; name: string } = {
   id: 1,
   name: "Ada",
 };
 ```
 
-Quand la structure devient importante → créer un `type`.
+Quand la structure devient importante → créer un `type`. Voir la slide qui suit.
+
+---
+
+- Fragile ...
+
+```ts
+function sendEmail(user: { id: number; email: string }) {
+  console.log(user.email);
+}
+
+function logUser(user: { id: number; email: string }) {
+  console.log(user.id);
+}
+```
+
+- Meilleur approche 
+
+```ts
+type User = {
+  id: number;
+  email: string;
+};
+// sendEmail(user: User)
+// logUser(user: User)
+```
 
 ---
 
@@ -68,9 +96,9 @@ Quand la structure devient importante → créer un `type`.
 TypeScript devine souvent mieux que vous :
 
 ```ts
-const name = "Ada";        // string
-const count = 3;           // number
-const enabled = true;      // boolean
+const name = "Ada";        // Ada
+const count = 3;           // 3
+const enabled = true;      // true
 const tags = ["ts", "js"]; // string[]
 ```
 
@@ -80,7 +108,38 @@ Ajouter :
 const name: string = "Ada";
 ```
 
-➡️ n'apporte rien.
+➡️ Sur une variable locale, l'annotation est souvent redondante car l'inférence est déjà correcte
+
+---
+
+# Précision const vérouille le typage en TS
+
+```ts
+// const préserve les types littéraux
+const n = "Ada";        // type = "Ada"
+const count = 3;        // type = 3
+const enabled = true;   // type = true
+
+function check(x: "Ada" | 3 | true) {
+  console.log("ça marche", x);
+}
+
+check(n);        // ✅
+check(count);    // ✅
+check(enabled);  // ✅
+check(13);       // ❌ erreur TypeScript
+
+```
+
+---
+
+`const` :
+- empêche la mutation
+- conserve le type littéral
+
+`let` :
+- autorise la mutation
+- élargit le type
 
 ---
 
@@ -107,9 +166,89 @@ Annoter est pertinent si :
 - l'inférence est trop large
 - vous documentez une intention métier
 
+**Voir ce qui suit pour plus de précisions.**
+
 ---
 
-# Exemple : valeur sans initialisation
+## Variable sans valeur immédiate
+
+```ts
+let total: number;
+total = 0;
+```
+
+Sans annotation :
+
+```ts
+let total; // any ❌ (si noImplicitAny désactivé)
+```
+
+---
+
+## Contrat public
+
+```ts
+export function send(user: User): void {}
+```
+
+>On ne laisse pas l'inférence définir une API publique.
+
+---
+
+# Quand ne pas annoter
+
+Évitez l'annotation si l'inférence est déjà correcte.
+
+```ts
+const name = "Ada";     // "Ada"
+const count = 3;        // 3
+const enabled = true;   // true
+```
+
+Ajouter :
+
+```ts
+const name: string = "Ada";
+```
+
+➡️ élargit le type
+➡️ supprime la précision littérale
+
+---
+
+## Inférence trop large
+
+```ts
+const config = {
+  mode: "prod"
+};
+```
+
+Type :
+
+```ts
+{ mode: string }
+```
+
+Si vous voulez verrouiller :
+
+```ts
+const config = {
+  mode: "prod"
+} as const;
+```
+
+---
+
+#  Règle simple
+
+- Variables locales → laissez l'inférence
+- API / domaine → annotez
+- Si l'inférence n'exprime pas votre intention → corrigez-la
+
+---
+
+# Attention - valeur sans initialisation
 
 ```ts
 let total: number;
@@ -126,44 +265,8 @@ let total;
 
 ---
 
-# Contrat public
 
-```ts
-type User = {
-  id: number;
-  email: string;
-};
-
-function createUser(data: User): User {
-  return data;
-}
-```
-
-Ici, l'annotation est essentielle.
-
----
-
-# Quand ne PAS annoter ?
-
-Éviter :
-
-```ts
-const x: number = 1;
-const y: string = "hello";
-```
-
-Éviter aussi :
-
-```ts
-let fn: Function;
-let obj: object;
-```
-
-Ces types sont trop génériques pour être utiles.
-
----
-
-# Valeurs vs Types
+# Valeurs vs Types - précision
 
 ```ts
 const status = "dev";
@@ -197,23 +300,6 @@ function getApiBaseUrl(env: Env) {
 Avantage :
 
 - Impossible d'écrire `"production"` par erreur.
-
----
-
-# Inference subtile : const vs let
-
-```ts
-const env = "dev";
-// type = "dev"
-
-let env2 = "dev";
-// type = string
-```
-
-Pourquoi ?
-
-- `const` → valeur figée
-- `let` → variable modifiable
 
 ---
 
@@ -258,7 +344,7 @@ Les union types éliminent toute classe d'erreurs.
 
 # Exercice — Inference
 
-Pour chaque ligne, donne le type inféré :
+Pour chaque ligne, donnez le type inféré :
 
 ```ts
 const n = 10;
@@ -267,11 +353,6 @@ const arr = [1, 2, 3];
 const mixed = [1, "a"];
 const user = { id: 1, name: "Ada" };
 ```
-
-Puis :
-
-- lesquelles méritent une annotation ?
-- pourquoi ?
 
 ---
 
