@@ -30,7 +30,9 @@ On utilise le dossier `starter/` comme terrain de jeu :
 
 ---
 
-### 🎓 Pourquoi monter `/app/node_modules` dans Docker ?
+### 🎓 Remarque importante dans le docker compse
+
+Pourquoi monter `/app/node_modules` dans Docker ?
 
 Quand on monte le code local :
 
@@ -45,26 +47,16 @@ Résultat : les dépendances installées lors du build disparaissent.
 
 ---
 
-#### ✅ Solution
+#### ✅ Solution pour nos dépendances
 
-Ajouter un volume dédié :
+Ajouter un volume dédié, c'est un volume séparée, les dépendances restent dans le conteneur, **pas d'écrasmenent.**
 
 ```
 - /app/node_modules
 ```
 
----
-
-####  Effet
-
-- Le code vient de votre machine
-- Les dépendances restent dans le container
-- Aucun conflit OS / version Node
-- Pas d'écrasement au démarrage
-
----
-
 👉 En dev : code synchronisé + dépendances protégées.
+
 
 ---
 
@@ -89,6 +81,11 @@ npm run typecheck
 
 ---
 
+
+<img src="./images/configuration.png" width="800" />
+
+---
+
 ## Dans le dossier starter : Docker 
 
 Depuis `starter/` :
@@ -106,21 +103,7 @@ docker exec -it node-ts sh
 Puis (dans le conteneur) spliter votre terminal
 - `npm run dev`
 - `npm run exo`
-- `npm run typecheck`
-
----
-
-## Quelques commandes Docker utiles
-
-`docker compose down -v` → Arrête les containers et supprime aussi les volumes (donc les données persistées).
-
-`docker compose build --no-cache` → Reconstruit les images Docker sans utiliser le cache.
-
-`docker compose up -d` → Lance les services définis dans le docker-compose en tache de fond.
-
-`docker system prune -a` → Supprime containers arrêtés, images inutilisées et cache Docker.
-
-`docker volume prune` → Supprime tous les volumes Docker non utilisés (perte possible de données).
+- `npm run typecheck` marche pour tous les scripts du projet, vérification du typage.
 
 ---
 
@@ -139,23 +122,25 @@ Dans `starter/package.json` :
 - `exo`  exécute le programme
 ---
 
-## Double écran / split VS Code (recommandé)
-
-But : éviter "ça tourne donc c'est bon".
-
-- Split de l'éditeur (ou 2 écrans) pour garder le code visible
-- 2 terminaux en parallèle :
-  - terminal A : `npm run dev`
-  - terminal B : `npm run typecheck`
-
----
-
-<img src="./images/configuration.png" width="800" />
-
----
 
 ## Règles de travail pendant le cours
 
 - **Toujours** laisser `typecheck` tourner pendant les exercices
 - Typer d'abord les **frontières** (inputs/outputs), pas chaque variable
 - Si une donnée vient de l'extérieur : `unknown` jusqu'à validation
+
+---
+
+## En annexe quelques commandes Docker utiles
+
+`docker compose down -v` → Arrête les containers et supprime aussi les volumes (donc les données persistées).
+
+`docker compose build --no-cache` → Reconstruit les images Docker sans utiliser le cache.
+
+`docker compose up -d` → Lance les services définis dans le docker-compose en tache de fond.
+
+`docker system prune -a` → Supprime containers arrêtés, images inutilisées et cache Docker.
+
+`docker volume prune` → Supprime tous les volumes Docker non utilisés (perte possible de données).
+
+---
