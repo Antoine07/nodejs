@@ -1,25 +1,24 @@
 {
   "name": "node-ts",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.11.0",
   "scripts": {
-    "typecheck": "tsc --watch --pretty",
-    "exo": "tsx watch src/Exercices/index.ts",
-    "cart" : "tsx watch src/Cart/Application/index.ts",
-    "movie": "tsx watch src/Movie/server.ts",
-    "dev" : "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/server.js",
+    "dev": "tsx watch src/server.ts",
+    "sandbox": "tsx watch src/Sandbox/intex.ts",
+    "cart": "tsx watch src/Cart/Application/index.ts",
+    "typecheck": "tsc --watch --pretty --noEmit"
   },
   "devDependencies": {
     "@types/node": "^25.2.3",
     "@types/pg": "^8.16.0",
-    "concurrently": "^9.2.1",
-    "tsx": "^4.7.0",
-    "typescript": "^5.5.0"
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "dotenv": "^17.3.0",
     "pg": "^8.18.0",
     "zod": "^4.3.6"
   }

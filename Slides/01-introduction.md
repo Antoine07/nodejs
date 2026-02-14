@@ -69,7 +69,7 @@ Les bugs sont souvent :
 
 ---
 
-## Bug silencieux : donnée API "presque" correcte
+## Bug possible : donnée API "presque" correcte
 
 ```js
 const apiResponse = { price: "12.50" };
@@ -81,11 +81,9 @@ function formatPrice(price) {
 formatPrice(apiResponse.price);
 ```
 
-Problèmes possibles :
+Problème :
 
-- concaténation au lieu d'addition
 - crash au **runtime**
-- difficile à détecter en tests
 
 ---
 
@@ -109,24 +107,25 @@ const result = formatPrice(parsePrice(apiResponse.price));
 
 ```js
 function sendEmail(user) {
-  return user.email.toLowerCase();
+  return user.email?.toLowerCase();
 }
 
 sendEmail({ name: "John" })
 sendEmail({ email: 12345 })
 ```
 
-Le bug apparaît :
+user.email est absent ?. empêche l'erreur
 
-- après une migration
-- avec un compte incomplet
-- sur un cas marginal
+La fonction retourne undefined
+Aucun crash, aucun message
 
-Et si vous ajoutez `user.email?.toLowerCase()`, ça n'arrange rien.
+👉 L'email n'est pas envoyé… et personne ne le sait.
 
 ---
 
 ## Version robuste en TypeScript
+
+Même si on peut valider en js pur, le crash arrive au runtime, avec TypeScript la vérification des types se fait avant ...
 
 ```ts
 type User = {
@@ -155,15 +154,13 @@ TypeScript :
   - propriétés manquantes
   - mauvais types
   - incohérences de retour
-- améliore la DX
+- améliore la DX, `DX: expérience développeur`.
 
 ---
 
 ## 🏷️ Définition — Typage statique
 
-Les types sont vérifiés avant l'exécution du programme.
-
-Les erreurs sont détectées à la compilation.
+Les types sont vérifiés au moment de la compilation, pas au runtime, donc avant l'exécution du programme.
 
 ---
 
@@ -187,6 +184,12 @@ Il complète :
 
 **TypeScript n'empêche pas d'écrire du JavaScript.**
 **Il empêche d'écrire du JavaScript faux.**
+
+---
+
+tsc (compilateur TypeScript)
+
+👉 Avec TypeScript, il y a un compilateur en plus par rapport à JavaScript pur.
 
 ---
 
@@ -214,12 +217,12 @@ Les données peuvent mentir.
 
 ---
 
-## ⚖️ Compile-time ≠ Runtime
+## Compile-time ≠ Runtime
 
 ```ts
 try {
   let name: string = "Alice";
-  name = null; // ❌ erreur TypeScript
+  name = null; // ❌ erreur TypeScript avant le runtime
 } catch (e) {
   console.log("Jamais exécuté");
 }
@@ -289,7 +292,13 @@ let name: string = "Alice";
 let active: boolean = true;
 ```
 
-Attention à `null` et `undefined` selon la configuration.
+La gestion des `null` et `undefined` par rapport à notre configuration `tsconfig` est strict. 
+
+```ts
+active = null ; // erreur typescript 
+
+let active : boolean | null ; // marche avec active = null
+```
 
 ---
 

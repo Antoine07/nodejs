@@ -5,7 +5,15 @@
     "moduleResolution": "Bundler",
     "rootDir": "src",
     "outDir": "dist",
+
     "strict": true,
+    "types": ["node"],
+    "lib": ["ES2022"],
+
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
     "skipLibCheck": true
-  }
+  },
+  "include": ["src"]
 }

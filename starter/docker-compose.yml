@@ -7,7 +7,7 @@ services:
       - /app/node_modules
     ports:
       - "3000:3000"
-    command: npm run dev
+    command: pnpm dev
     depends_on:
       - postgres
     environment:
@@ -15,19 +15,19 @@ services:
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: postgres
-      DB_NAME: cart
+      DB_NAME: db
 
   postgres:
     image: postgres:17-alpine
-    container_name: cart-postgres
+    container_name: db-postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: cart
+      POSTGRES_DB: db
     ports:
       - "5434:5432"
     volumes:
-      - cart_pg_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
 
 volumes:
-  cart_pg_data:
+  pg_data:

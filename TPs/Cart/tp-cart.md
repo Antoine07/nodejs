@@ -108,13 +108,13 @@ CREATE TABLE cart_storage (
 );
 ```
 
-Si vous utilisez Docker (comme `Apps/docker-compose.yml`) :
-- un service `postgres` (DB `cart`, user `postgres`, pass `postgres`)
+Si vous utilisez Docker (comme `starter/docker-compose.yml`) :
+- un service `postgres` (DB `db`, user `postgres`, pass `postgres`)
 - un service `app` qui reçoit les variables d'environnement DB
 
 Commandes utiles (exemples) :
 - `docker compose up --build`
-- `docker exec -it cart-postgres psql -U postgres -d cart`
+- `docker exec -it cart-postgres psql -U postgres -d db`
 - coller le SQL de `schema.sql`
 
 ##  Infrastructure : connexion DB (`DB.ts`)

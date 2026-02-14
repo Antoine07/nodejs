@@ -1,121 +1,135 @@
-# TypeScript / Node — workspace
+# TypeScript / Node — environnement de travail
 
 Ce dépôt contient :
 - des slides (`Slides/` → `docs/`)
-- un `starter/` minimal Node 24 + TypeScript
-- une app d’exemple avec PostgreSQL (`Apps/`, notamment `src/Cart_v1/`)
+- des TPs (`TPs/`)
+- un starter **dockerisé** (`starter/`) pour travailler avec Node 24 + TypeScript + PostgreSQL
 
-## Slides
+L’objectif principal est d’installer un environnement reproductible pour faire les exercices du cours.
+
+## Prérequis
+
+- Docker + Docker Compose (Docker Desktop convient)
+- (Option) Node.js si génération des slides en local
+
+## Slides (option)
 
 Générer le HTML dans `docs/` :
 
 ```bash
+npm install
 npm run slides:build
 ```
 
-## Starter 
+## Environnement Docker (recommandé) — `starter/`
 
-### Local (sans Docker)
-
-```bash
-cd starter
-npm install
-```
-
-Terminal A (runtime) :
-```bash
-npm run dev
-```
-
-Terminal B (type-check) :
-```bash
-npm run typecheck
-```
-
-### Docker (option)
+### 1) Démarrer Node + PostgreSQL
 
 ```bash
 cd starter
 docker compose up --build
 ```
 
-Ouvrir un shell dans le conteneur :
-```bash
-docker exec -it node-ts sh
-```
+Services :
+- `app` : Node 24 + TypeScript (container `node-ts`, port hôte `3000`)
+- `postgres` : PostgreSQL (container `db-postgres`, port hôte `5434` → conteneur `5432`)
 
-Arrêter et supprimer les ressources Docker du starter :
-```bash
-docker compose down -v --remove-orphans
-```
+### 2) Lancer le type-check en parallèle (2e terminal)
 
-Note : `starter/` utilise `container_name: node-ts`.
-
-##  `starter/` 
-
-### Démarrer les conteneurs
+Depuis `starter/` :
 
 ```bash
-cd starter
-docker compose up --build
+docker compose exec app pnpm typecheck
 ```
 
-Ouvrir un shell dans le conteneur Node :
+Le principe de travail recommandé est :
+- Terminal A : runtime (container `app` via `docker compose up`)
+- Terminal B : type-check (commande ci-dessus)
+
+### 3) Tester le serveur
+
+Endpoints utiles :
+
 ```bash
-docker exec -it node-ts sh
+http://localhost:3000
+http://localhost:3000/health
+http://localhost:3000/db
 ```
 
-### Se connecter à PostgreSQL
+### 4) Shell dans le conteneur (option)
+
+```bash
+docker compose exec app sh
+```
+
+## Structure du projet
+
+- `starter/` : starter Node 24 + TS + HTTP + DB
+- `TPs/` : sujets + squelettes de TPs (Cart / Movie)
+- `Corrections/` : corrections d’exercices + code de référence
+
+## Base de données (PostgreSQL)
+
+### Se connecter à la DB
 
 Dans le conteneur Postgres :
+
 ```bash
-docker exec -it cart-postgres psql -U postgres -d cart
+docker exec -it db-postgres psql -U postgres -d db
 ```
 
-Depuis la machine hôte (port mappé en `5434:5432`) :
+Depuis la machine hôte :
+
 ```bash
-psql -h localhost -p 5434 -U postgres -d cart
+psql -h localhost -p 5434 -U postgres -d db
 ```
 
-### Créer les tables (schema SQL)
+### Créer les tables (SQL)
 
-Le schéma est dans `TPs/Cart/schema.sql`.
+Movie (films + salles + séances) :
 
-Depuis la racine du dépôt :
 ```bash
-docker exec -i cart-postgres psql -U postgres -d cart < TPs/Cart/schema.sql
+docker exec -i db-postgres psql -U postgres -d db < TPs/Movie/schema.sql
 ```
 
-### Remettre les conteneurs "propres" (restart clean)
+Cart :
 
-Arrêt + suppression conteneurs + volumes du projet `starter/` :
 ```bash
-cd starter
+docker exec -i db-postgres psql -U postgres -d db < Corrections/Cart/schema.sql
+```
+
+## Remettre l’environnement “propre” (restart clean)
+
+Depuis `starter/` :
+
+Arrêt + suppression conteneurs + volumes :
+
+```bash
 docker compose down -v --remove-orphans
 ```
 
 Rebuild sans cache (si nécessaire) :
+
 ```bash
 docker compose build --no-cache
 docker compose up
 ```
 
 Si des noms de conteneurs restent bloqués :
+
 ```bash
-docker rm -f node-ts cart-postgres 2>/dev/null || true
+docker rm -f node-ts db-postgres 2>/dev/null || true
 ```
 
 Nettoyage (attention : peut supprimer des ressources Docker non liées au projet) :
+
 ```bash
 docker volume prune
 docker builder prune
 ```
 
 Nettoyage "agressif" (attention : supprime aussi des images) :
-```bash
-docker system prune -a
-```
 
 ```bash
-docker exec -it cart-postgres psql -U postgres -d postgres -c "CREATE DATABASE cineconnect;"
+docker system prune -a
 ```

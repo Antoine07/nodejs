@@ -1,17 +1,14 @@
 FROM node:24-alpine
 
-# Installer vim (et bash si besoin futur)
-RUN apk add --no-cache vim
+RUN corepack enable
 
 WORKDIR /app
 
-# Copier uniquement les fichiers nécessaires au install
-COPY package.json package-lock.json* ./
+COPY package.json pnpm-lock.yaml* ./
+RUN pnpm install
 
-# Installer les dépendances + zod
-RUN npm install
-
-# Copier le reste du projet
 COPY . .
 
-CMD ["npm", "run", "dev"]
+EXPOSE 3000
+
+CMD ["pnpm", "dev"]

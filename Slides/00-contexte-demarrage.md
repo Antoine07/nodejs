@@ -28,9 +28,11 @@ On utilise le dossier `starter/` comme terrain de jeu :
 - `tsx` pour exécuter en dev
 - `tsc` pour vérifier les types
 
+On utilisera `pnpm` déjà présent dans le `starter/`
+
 ---
 
-### 🎓 Remarque importante dans le docker compse
+###  Remarque importante dans le docker compse
 
 Pourquoi monter `/app/node_modules` dans Docker ?
 
@@ -47,7 +49,7 @@ Résultat : les dépendances installées lors du build disparaissent.
 
 ---
 
-#### ✅ Solution pour nos dépendances
+####  Solution pour nos dépendances
 
 Ajouter un volume dédié, c'est un volume séparée, les dépendances restent dans le conteneur, **pas d'écrasmenent.**
 
@@ -60,68 +62,33 @@ Ajouter un volume dédié, c'est un volume séparée, les dépendances restent d
 
 ---
 
-## Dans le dossier stater
+## Application 
 
-Vérifiez que la version de votre `node` local est bien la même que dans votre conteneur.
+Récupérez le `starter/` pour travailler.
+
 
 ```bash
-cd starter
-npm install
+docker compose build --no-cache
+docker compose up -d 
 ```
+
+Pensez à vous connecter dans votre conteneur : `docker exec -it node-ts sh`
 
 Terminal 1 :
 ```bash
-npm run dev
+npm run dev # exécute les scripts
 ```
 
 Terminal 2 :
 ```bash
-npm run typecheck
+npm run typecheck # debug TypeScript
 ```
 
 ---
-
 
 <img src="./images/configuration.png" width="800" />
 
 ---
-
-## Dans le dossier starter : Docker 
-
-Depuis `starter/` :
-
-```bash
-docker compose up --build -d
-```
-
-Ouvrir un shell dans le conteneur :
-
-```bash
-docker exec -it node-ts sh
-```
-
-Puis (dans le conteneur) spliter votre terminal
-- `npm run dev`
-- `npm run exo`
-- `npm run typecheck` marche pour tous les scripts du projet, vérification du typage.
-
----
-
-## Pourquoi `dev` ET `typecheck` ?
-
-Dans `starter/package.json` :
-
-```json
-"exo": "tsx watch src/Exercices/index.ts",
-"dev" : "tsx watch src/index.ts",
-"typecheck": "tsc --watch --pretty  src/index.ts",
-```
-
-- `dev` exécute le programme (ça peut "tourner" même si le typage est mauvais)
-- `typecheck` empêche de se mentir : erreurs TS visibles immédiatement
-- `exo`  exécute le programme
----
-
 
 ## Règles de travail pendant le cours
 
@@ -142,5 +109,3 @@ Dans `starter/package.json` :
 `docker system prune -a` → Supprime containers arrêtés, images inutilisées et cache Docker.
 
 `docker volume prune` → Supprime tous les volumes Docker non utilisés (perte possible de données).
-
----
