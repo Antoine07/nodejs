@@ -107,6 +107,8 @@ Restreindre quand :
 
 ---
 
-# Exercice
+# Exercices
 
-Créer une fonction `wrap` qui encapsule une valeur dans un objet et `unwrap` 
+
+
+`Exercices/08-contraintes-extends.md`

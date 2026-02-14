@@ -169,10 +169,4 @@ Donc toutes les strings sont autorisées.
 
 # Exercice — `set`
 
-Écrire :
-
-```ts
-function set<T, K extends keyof T>(obj: T, key: K, value: T[K]): T
-```
-
-Elle retourne un nouvel objet avec la clé mise à jour.
+Écrire une fonction, elle retourne un nouvel objet avec la clé mise à jour.

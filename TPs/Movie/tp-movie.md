@@ -64,20 +64,23 @@ Règle : **le serveur HTTP ne doit pas contenir de SQL**. Le SQL doit vivre dans
 
 ```bash
 cd Apps
-docker compose up --build
+docker compose up --build -d
 ```
 
-2) Créer les tables + seed :
+2) Créer la base de données et les tables + seed :
 
 Depuis la racine du dépôt :
 ```bash
+docker exec -it cart-postgres psql -U postgres -d postgres -c "CREATE DATABASE cineconnect;"
+
+# migration et seeders 
 docker exec -i cart-postgres psql -U postgres -d cineconnect < TPs/Movie/schema.sql
 ```
 
 3) Vérifier rapidement :
 
 ```bash
-docker exec -it cart-postgres psql -U postgres -d cineconnect;
+docker exec -it cart-postgres psql -U postgres -d cineconnect
 ```
 
 Puis :
