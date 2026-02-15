@@ -27,23 +27,9 @@ interface Duck<T> {
 
 ##  Créer deux canards différents
 
-Un canard sauvage : 
+Un canard sauvage.
 
-```ts
-const mallard: Duck<{
-  billType: string;
-  legs: number;
-}> = { ... };
-```
-
-Un canard robot :
-
-```ts
-const roboDuck: Duck<{
-  metal: boolean;
-  batteryLevel: number;
-}> = { ... };
-```
+Un canard robot.
 
 ---
 

@@ -222,3 +222,7 @@ Cela aide :
 - Repositories pour séparer HTTP et SQL.
 - Commencer en `GET`, puis étendre vers `POST/PUT/PATCH/DELETE` avec validation du body.
 
+
+## TP - réfléchir à deux 
+
+`TPs/Movie`

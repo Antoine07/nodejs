@@ -12,15 +12,6 @@ title: "TypeScript — 5 Unions & narrowing"
 
 ---
 
-# Objectif du chapitre
-
-- Créer des unions (`A | B`)
-- Réduire (narrow) avec `typeof`, `in`, `===`
-- Modéliser des états impossibles
-- Éviter des erreurs "par design"
-
----
-
 # Unions : un type, plusieurs formes possibles
 
 ```ts
@@ -31,7 +22,59 @@ function toIdString(id: Id) {
 }
 ```
 
-Le vrai gain arrive quand les branches ont des comportements différents.
+>Le vrai gain arrive quand les branches ont des comportements différents.
+
+---
+
+**Narrowing** : mécanisme par lequel TypeScript réduit automatiquement un type large vers un type plus précis en fonction d'un test (typeof, instanceof, in, comparaison stricte, discriminant, truthiness, ou type guard).
+
+Nous ne verrons qu'ici : typeof, in, la comparaison stricte (===) sur des littéraux, et les unions discriminées (via une propriété comme state ou ok).
+
+---
+
+>Le narrowing permet de dire : "Dans cette branche, je suis sûr que c’est l’un des deux."
+
+---
+
+## 🎯 Donc la règle simple
+
+>Vous faites du narrowing quand :
+TypeScript ne peut pas garantir que la propriété existe.
+
+>Sinon, inutile.
+
+---
+
+## Utile
+
+```ts
+function printEmail(email: string | null) {
+  if (!email) {
+    return "No email";
+  }
+
+  return email.toLowerCase(); // sûr
+}
+```
+
+---
+
+## Inutile
+
+```ts
+function double(n: number) {
+  if (typeof n === "number") {
+    return n * 2;
+  }
+
+  return 0;
+}
+
+// correction 
+function double(n: number) {
+  return n * 2;
+}
+```
 
 ---
 
@@ -46,7 +89,7 @@ function format(value: string | number) {
 }
 ```
 
-Dans chaque branche, TS "sait" le type exact.
+>Dans chaque branche, TS "sait" le type exact.
 
 ---
 
@@ -79,6 +122,62 @@ function isFinal(status: PaymentStatus) {
 
 ---
 
+# `as const` : obtenir un discriminant automatiquement
+
+```ts
+function parseAge(input: string) {
+  const n = Number(input);
+
+  if (Number.isNaN(n)) {
+    return { ok: false, error: "INVALID_AGE" } as const;
+  }
+
+  return { ok: true, value: n } as const;
+}
+
+const r = parseAge("12");
+
+if (r.ok) {
+  r.value; // number
+} else {
+  r.error; // "INVALID_AGE"
+}
+```
+
+`ok` devient un discriminant (`true`/`false`) qui permet un narrowing fiable.
+
+---
+
+`as const` permet d'obtenir un **type de retour précis sous forme d'union discriminée**, au lieu d'un objet flou avec des champs optionnels.
+
+---
+
+### Différence sur le type de retour
+
+Sans `as const` :
+
+```ts
+// Type inféré
+{
+  ok: boolean;
+  error?: string;
+  value?: number;
+}
+```
+
+Avec `as const` :
+
+```ts
+// Type inféré
+| { readonly ok: false; readonly error: "INVALID_AGE" }
+| { readonly ok: true;  readonly value: number }
+```
+
+👉 Ce n'est plus "un objet avec des propriétés optionnelles",
+mais **deux formes strictes et exclusives**.
+
+---
+
 # États impossibles : exemple UI naïf
 
 ```ts
@@ -90,7 +189,7 @@ type Ui = {
 };
 ```
 
-Problème : `loading=true` + `error` + `data` peut coexister.
+>Problème : `loading=true` + `error` + `data` peut coexister.
 
 ---
 
@@ -104,7 +203,7 @@ type Ui =
   | { state: "error"; message: string };
 ```
 
-Ici, certains combos sont *impossibles* par construction.
+>Ici, certains combos sont *impossibles* par construction.
 
 ---
 
@@ -136,3 +235,7 @@ function unwrap<T>(r: ApiResult<T>) {
   return r.data;
 }
 ```
+
+## Exercice
+
+`Exercice/05-unions-narrowing.md`

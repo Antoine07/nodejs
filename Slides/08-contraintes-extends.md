@@ -35,6 +35,26 @@ echo("hello"); // ok
 
 ---
 
+# Exemple : `as const` pour satisfaire une contrainte
+
+```ts
+type Mode = "dev" | "prod";
+
+function setMode<T extends Mode>(mode: T) {
+  return mode;
+}
+
+const cfg1 = { mode: "dev" };
+// setMode(cfg1.mode); // erreur : string n'est pas Mode
+
+const cfg2 = { mode: "dev" } as const;
+setMode(cfg2.mode); // ok
+```
+
+Sur un objet, `mode: "dev"` est souvent élargi en `string` : `as const` évite cet élargissement.
+
+---
+
 # Pourquoi contraindre ?
 
 Sans contrainte :

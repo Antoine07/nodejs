@@ -256,11 +256,13 @@ Deux mondes :
 
 ---
 
-**Externe incertain => zod**
+**Externe incertain**
 - API
 - JSON.parse
 - formulaires
 - process.env
+
+**Solution possible un validateur comme zod pour le monde exterieur.**
 
 ---
 
@@ -269,7 +271,7 @@ Le monde externe doit être validé.
 
 ---
 
-## Exemple de zod - validation externe
+## Exemple avec zod - validation externe
 
 ```ts
 import { z } from "zod";

@@ -81,6 +81,24 @@ Si vous retournez parfois une string, l'erreur est immédiate.
 
 ---
 
+# `as const` : figer un tuple de retour
+
+Sans `as const`, un tableau de retour devient souvent un "tableau de mélange" (`(A | B)[]`).
+
+```ts
+function safeNumber(input: string) {
+  const n = Number(input);
+  if (Number.isNaN(n)) return [null, "Not a number"] as const;
+  return [n, null] as const;
+}
+
+const [value, error] = safeNumber("42");
+```
+
+Avec `as const`, TypeScript garde un **tuple** (`[number, null]` ou `[null, string]`).
+
+---
+
 # Paramètres optionnels
 
 ```ts

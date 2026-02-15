@@ -145,4 +145,6 @@ Souvent, on **sépare** DTO (API) et modèle métier (app).
 
 ---
 
+## TP - réfléchir à deux
+
 `TPs/tp-cart.md`
