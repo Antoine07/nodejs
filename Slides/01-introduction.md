@@ -401,7 +401,7 @@ TypeScript infère automatiquement le type de retour.
 
 ## Quand dépendre de l'inférence
 
-Excellente pour le code local, dans ces cas précis, c'est une très bonne chose.
+Excellente pour le code local, dans ces cas, ci-dessous, précis, c'est une très bonne chose.
 
 ```ts
 const tags = ["ts", "js"];
