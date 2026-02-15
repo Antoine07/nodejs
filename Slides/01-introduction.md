@@ -401,7 +401,7 @@ TypeScript infère automatiquement le type de retour.
 
 ## Quand dépendre de l'inférence
 
-Excellente pour le code local :
+Excellente pour le code local, dans ces cas précis, c'est une très bonne chose.
 
 ```ts
 const tags = ["ts", "js"];
@@ -409,7 +409,7 @@ const user = { id: 1, name: "Ada" };
 const ids = [user].map((u) => u.id);
 ```
 
-Mais aux frontières, il faut être explicite et valider. Une frontière est l'endroit où votre code rencontre quelque chose qu'il ne contrôle pas.
+>Mais aux frontières, il faut être explicite et valider. Une frontière est l'endroit où votre code rencontre quelque chose qu'il ne contrôle pas.
 
 ---
 
