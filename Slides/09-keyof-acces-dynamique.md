@@ -87,6 +87,21 @@ clé possible = n'importe quel string
 
 ---
 
+>`Record<string, number>` est équivalent à :
+
+```ts
+type Dict = {
+  [key: string]: number;
+};
+
+```
+
+---
+
+>Les clés d'un Record sont `string | number | symbol`
+
+---
+
 #  Comparaison claire
 
 ## Clés connues
@@ -170,3 +185,10 @@ Donc toutes les strings sont autorisées.
 # Exercice — `set`
 
 Écrire une fonction, elle retourne un nouvel objet avec la clé mise à jour.
+
+```ts
+console.log(user)
+// { id: 1, name: 'Alice', active: false } 
+console.log(updated)
+// { id: 1, name: 'Alice', active: true }   
+```

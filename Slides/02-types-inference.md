@@ -46,20 +46,23 @@ En pratique :
 
 ---
 
-# Tableaux, tuples, objets
+# Tableaux, tuples, objets 
 
 ```ts
-// tableau
-const numbers: number[] = [1, 2, 3];
+// ✅ Tableau → inférence automatique
+const numbers = [1, 2, 3];
+// type inféré : number[]
 
-// tuple
+// ⚠️ Tuple → pas inféré automatiquement
 const pair: [string, number] = ["age", 20];
+// sans annotation → (string | number)[]
 
-// objet
-const user: { id: number; name: string } = {
+// ✅ Objet → inférence automatique
+const user = {
   id: 1,
   name: "Ada",
 };
+// type inféré : { id: number; name: string }
 ```
 
 Quand la structure devient importante → créer un `type`. Voir la slide qui suit.
@@ -93,12 +96,12 @@ type User = {
 
 # L'inférence automatique
 
-TypeScript devine souvent mieux que vous :
+TypeScript devine souvent mieux que vous ... 
 
 ```ts
-const name = "Ada";        // Ada
-const count = 3;           // 3
-const enabled = true;      // true
+const name = "Ada";        // Ada sous type de string
+const count = 3;           // 3 sous type de number
+const enabled = true;      // true sous type de boolean
 const tags = ["ts", "js"]; // string[]
 ```
 
@@ -112,13 +115,29 @@ const name: string = "Ada";
 
 ---
 
-# Précision const vérouille le typage en TS
+>Petite précision sur les sous type de TypeScript
+
+```ts
+
+function greet(value: string) {}
+greet(name); // OK
+
+function greetNum(value: number) {}
+greetNum(count); // OK
+
+// etc 
+
+```
+
+--- 
+
+# const vérouille le typage en TS
 
 ```ts
 // const préserve les types littéraux
-const n = "Ada";        // type = "Ada"
-const count = 3;        // type = 3
-const enabled = true;   // type = true
+const n = "Ada";        // type = "Ada" sous type de string
+const count = 3;        // type = 3 sous type de number
+const enabled = true;   // type = true sous type de boolean
 
 function check(x: "Ada" | 3 | true) {
   console.log("ça marche", x);

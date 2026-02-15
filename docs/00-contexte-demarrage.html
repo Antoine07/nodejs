@@ -58,7 +58,8 @@
 <header><a href="https://antoine07.github.io/ts">index</a></header>
 <h2 id="application">Application</h2>
 <p>Récupérez le <code>starter/</code> pour travailler.</p>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-bash">docker compose build --no-cache
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-bash"><span class="hljs-comment"># option no-cache si dépendance mis à jour </span>
+docker compose build --no-cache
 docker compose up -d 
 </code></pre>
 <p>Pensez à vous connecter dans votre conteneur : <code>docker exec -it node-ts sh</code></p>

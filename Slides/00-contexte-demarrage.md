@@ -68,6 +68,7 @@ Récupérez le `starter/` pour travailler.
 
 
 ```bash
+# option no-cache si dépendance mis à jour 
 docker compose build --no-cache
 docker compose up -d 
 ```
