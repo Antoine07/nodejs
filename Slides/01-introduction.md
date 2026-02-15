@@ -500,13 +500,8 @@ TypeScript est :
 
 ---
 
-<!-- _class: lead -->
 
-# Exercices
-
----
-
-##  Identifier les bugs
+##  Exercices Identifier les bugs
 
 Donnez 1 exemples de bugs silencieux.
 
