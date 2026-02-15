@@ -406,7 +406,25 @@ const user = { id: 1, name: "Ada" };
 
 ---
 
-# Exercice — Config robuste
+# 1 Exercice — question d'inférence 
+
+>Dans le code suivant inférence, pour `u` totale partielle ou aucune inférence ?
+
+```ts
+type User = {
+  id: number;
+  name: string;
+};
+
+const u: User = {
+  id: 1,
+  name: "Ada",
+};
+```
+
+---
+
+# 2 Exercice — Config robuste
 
 1. Déclarez un type `Env` = `"dev" | "prod"`.
 2. Déclarez un type `LogLevel` = `"debug" | "info" | "warn" | "error"`.

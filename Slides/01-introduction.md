@@ -413,18 +413,7 @@ const ids = [user].map((u) => u.id);
 
 ---
 
-## Limites de l'inférence 
-
-**On en reparlera plus loin dans le cours.**
-
-- contrats publics
-- objets vides
-- `let` élargit les littéraux
-- unions implicites
-
----
-
-## Exemple — let élargit
+## Exemple — let élargit - encore de l'inférence
 
 ```ts
 type Role = "dev" | "admin";
@@ -444,33 +433,43 @@ const role = "dev"; // le type est Role maintenant
 
 ---
 
-## Unions implicites
+## Unions implicites - inférence par branche
 
 ```ts
 let value: string | number;
 
 if (Math.random() > 0.5) {
-  value = "hello";
+  value = "hello"; // inférence 
 } else {
-  value = 42;
+  value = 42; // inférence
 }
 ```
 
-TypeScript combine les types possibles.
+>TypeScript combine les types possibles par inférence.
 
 ---
 
-## Exemple API réaliste - non externe
+## Limites de l'inférence 
+
+**On en reparlera plus loin dans le cours.**
+
+- contrats publics
+- objets vides
+- `let` élargit les littéraux
+- unions implicites
+
+---
+
+## Exemples sans inférence
 
 ```ts
-type ApiUser = {
-  id: number;
-  email: string | null;
-};
-
-if (user.email !== null) {
-  user.email.toLowerCase();
+//
+function add(a: number, b: number): number {
+  return a + b;
 }
+//
+let count: number;
+count = 10;
 ```
 
 ---
