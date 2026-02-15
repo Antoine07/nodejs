@@ -507,3 +507,26 @@ Donnez 1 exemples de bugs silencieux.
 
 - TypeScript peut-il aider ?
 - Si non, que faut-il ajouter ?
+
+---
+
+## Exercice d'algo - nombres premiers particuliers
+
+Un nombre premier p est retenu si son rang (position parmi les nombres premiers) est égal au produit des chiffres de p.
+
+Générez 1000 nombres premiers et construisez un script qui permet de trouver, si il existe des nombres vérifiant cette propriété.
+
+```ts
+function isPrime(n: number) {
+    if(n === 2) return true
+    if (n % 2 === 0 || n < 2) return false
+
+    let i = 3;
+    while (i <= Math.sqrt(n)) {
+        if (n % i === 0) return false
+        i = i + 2;
+    }
+
+    return true
+}
+```

@@ -11,24 +11,23 @@ et écrire des fonctions génériques capables de les manipuler sans perdre le t
 
 ---
 
-##   Interface de base
+## Interface générique `Duck`
 
-On vous donne :
+Créer une interface générique `Duck<T>` avec :
 
-```ts
-interface Duck<T> {
-  name: string;
-  quack(): string;
-  features: T;
-}
-```
+* `name: string`
+* `quack(): string`
+* `features: T`
 
----
+Contraindre `T` pour qu’il contienne au minimum :
+
+* `legs: number`
+* `canFly: boolean`
+
 
 ##  Créer deux canards différents
 
 Un canard sauvage.
-
 Un canard robot.
 
 ---
@@ -52,21 +51,5 @@ Exemple :
 ```ts
 const features = getFeatures(mallard);
 // features doit être correctement typé
-```
-
----
-
-##  Contrainte avancée
-
-Créer une fonction elle doit :
-
-* fonctionner uniquement si `features` contient `legs`
-* retourner `true` si `legs > 0`
-
-Test :
-
-```ts
-hasLegs(mallard);  // OK
-hasLegs(roboDuck); // ❌ erreur TypeScript
 ```
 

@@ -1,9 +1,7 @@
 
 # Exercice — Tirage aléatoire asynchrone
 
-On souhaite simuler un service distant qui effectue un tirage aléatoire.
-
-## Consignes
+On souhaite simuler un service distant qui effectue un tirage aléatoire
 
 1. Créer un type `DrawResult` :
 
@@ -16,7 +14,7 @@ On souhaite simuler un service distant qui effectue un tirage aléatoire.
 
 4. Utiliser la fonction et afficher :
 
-* `"Success: X"` si succès
-* `"Error: Y"` si erreur
+* `"Success: [value]"` si succès
+* `"Error: [error]"` si erreur
 
 ⚠️ Ne pas utiliser `any` ni `as`.
