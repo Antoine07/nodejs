@@ -12,46 +12,6 @@ title: "TypeScript — 3 Fonctions"
 
 ---
 
-# Objectif du chapitre
-
-- Typer les paramètres (et comprendre pourquoi)
-- Comprendre le typage du retour (quand / pourquoi)
-- Gérer optionnels, valeurs par défaut, objets d'options
-- Savoir typer des callbacks et fonctions comme valeurs
-
----
-
-# Paramètres typés
-
-```ts
-function add(a: number, b: number) {
-  return a + b;
-}
-
-add(1, 2);
-// add("1", 2); // erreur
-```
-
-Le contrat est explicite : `number` + `number` → `number`.
-
----
-
-# Retour : souvent inféré
-
-```ts
-function toSlug(value: string) {
-  return value.trim().toLowerCase().replaceAll(" ", "-");
-}
-// retour inféré : string
-```
-
-Annoter le retour peut être utile :
-- pour un contrat public
-- pour éviter une union "surprise" (voir la slide qui suit pour un rappel)
-- pour documenter une intention
-
----
-
 ## Point technique rappel
 
 Ici TypeScript infère une union de types `(flag: boolean) => string | number`
@@ -64,20 +24,6 @@ function getLabel(flag: boolean) {
   return 0;
 }
 ```
-
----
-
-# Retour : quand l'annotation protège
-
-```ts
-function parsePort(value: string): number {
-  const n = Number(value);
-  if (Number.isNaN(n)) return 3000; // fallback
-  return n;
-}
-```
-
-Si vous retournez parfois une string, l'erreur est immédiate.
 
 ---
 
@@ -99,30 +45,6 @@ Avec `as const`, TypeScript garde un **tuple** (`[number, null]` ou `[null, stri
 
 ---
 
-# Paramètres optionnels
-
-```ts
-function greet(name?: string) {
-  // name: string | undefined
-  return `Hello ${name ?? "anonymous"}`;
-}
-```
-
-`?` signifie : "peut être absent".
-
----
-
-# Valeurs par défaut
-
-```ts
-function paginate(page = 1, pageSize = 20) {
-  return { page, pageSize };
-}
-```
-
-Ici, `page` et `pageSize` sont `number`.
-
----
 
 ## Objet nommé 
 
@@ -213,14 +135,6 @@ rateMovie(
 
 ---
 
-## Ce que TypeScript garantit
-
-- `data.average` est un `number`
-- impossible d'accéder à une propriété inexistante
-- contrat clair entre la logique métier et l'UI
-
----
-
 > Le typage du callback définit précisément ce que la fonction renvoie à l'appelant.
 
 ---
@@ -244,30 +158,6 @@ type Response = {
 
 type Handler = (req: Request) => Promise<Response> | Response;
 ```
-
----
-
-## Ce que ces types apportent
-
-- `HttpMethod` limite les valeurs possibles
-- `Request` structure l'entrée
-- `Response` impose une forme cohérente
-- `Handler` définit un contrat clair (sync ou async)
-
----
-
-## Pourquoi c'est important
-
-Même sans framework :
-
-- l'architecture est explicite
-- les responsabilités sont claires
-- les frontières (body: unknown) sont identifiées
-
-> Les types structurent la logique avant même d'écrire l'implémentation.
-
----
-Parfait — voici une version compacte, claire et directement intégrable en **2 slides**.
 
 ---
 

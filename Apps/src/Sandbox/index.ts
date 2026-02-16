@@ -54,3 +54,78 @@ for (const prime of primes) {
     check(enabled);  // ✅
     check(13);
 })()
+
+
+const config = {
+    mode: "prod"
+} as const;
+
+
+const HTTP_METHODS = ["GET", "POST", "PUT", "DELETE"] as const;
+
+type HttpMethod = (typeof HTTP_METHODS)[number];
+
+function request(method: HttpMethod, path: string) {
+    return `${method} ${path}`;
+}
+
+request("GET", "/health"); // ok
+// request("PATCH", "/health"); // erreur
+
+
+import {
+    createServer,
+    type IncomingMessage,
+    type ServerResponse,
+} from "node:http";
+
+
+const server = createServer(
+    (req: IncomingMessage, res: ServerResponse): void => {
+
+        const method = req.method; // string | undefined
+
+        if (!method || !HTTP_METHODS.includes(method as any)) {
+            res.statusCode = 405;
+            res.end("Method Not Allowed");
+            return
+        }
+
+        res.end(`OK: ${method}`);
+    }
+);
+
+server.listen(3001, () => {
+    console.log("Server running on http://localhost:3000");
+});
+
+
+(function () {
+    const n = 10;  // 10 sous type number
+    let s = "hello"; // string
+    const arr = [1, 2, 3]; // number[]
+    const mixed = [1, "a"]; // (number | sting)[]
+    const user = { id: 1, name: "Ada" }; // { id : number, name : string }
+
+
+    const t : [string, number] = ["k", 1] ;
+
+    type User = {
+        id: number;
+        name: string;
+      };
+      
+      const u: User = {
+        id: 1,
+        name: "Ada",
+      };
+
+})()
+
+
+function safeNumber(input: string) {
+    const n = Number(input);
+    if (Number.isNaN(n)) return [null, "Not a number"] as const;
+    return [n, null] as const;
+  }
+  
