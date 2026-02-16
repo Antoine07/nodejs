@@ -12,20 +12,11 @@ title: "TypeScript — 4 Objets & structures"
 
 ---
 
-# Objectif du chapitre
-
-- Savoir choisir `type` vs `interface`
-- Gérer propriétés optionnelles et `readonly`
-- Utiliser `Record` pour des dictionnaires
-- Comprendre "dictionnaire" vs "objet structuré"
-
----
-
 # `type` vs `interface` (pratique)
 
 Deux outils proches, mais des usages classiques :
-- `interface` : forme d'objet "extensible" (souvent pour des modèles)
-- `type` : compositions, unions, aliases, utilitaires
+- `interface` : forme d'objet "extensible" (souvent pour des modèles), contrat structurel extensible
+- `type` : compositions, unions, aliases, utilitaires, outil de composition avancée
 
 Dans beaucoup d'équipes : **préférence `type` par défaut**, `interface` pour objets publics/OO.
 
@@ -57,21 +48,17 @@ Différence visible surtout dans l'extension et le "merging" des interfaces.
 
 ---
 
-# Propriétés optionnelles
+## Merging
 
 ```ts
-type Product = {
-  id: string;
-  title: string;
-  discountPercentage?: number;
-};
+interface User {
+  id: number;
+}
 
-function getDiscountLabel(p: Product) {
-  return p.discountPercentage ? `-${p.discountPercentage}%` : "—";
+interface User {
+  name: string;
 }
 ```
-
-Optionnel ≠ présent. À gérer systématiquement.
 
 ---
 
@@ -122,28 +109,107 @@ type UsersById = Record<number, User>;
 Question à se poser : "mes clés sont-elles connues à l'avance ?"
 
 ---
+Voici une version plus claire, plus structurée et plus pédagogique.
 
-# DTO / données API : attention au "contrat"
+---
 
-🏷️ Définition : Un `DTO` est un objet dont le rôle est de transporter des données entre deux couches d'un système (API ↔ backend ↔ base de données), sans contenir de logique métier.
+# DTO / API : respecter le **contrat de données**
+
+## 🎯 Idée centrale
+
+Un **DTO (Data Transfer Object)** sert uniquement à **transporter des données entre deux couches** :
+
+* Frontend ↔ API
+* API ↔ Backend
+* Backend ↔ Base de données
+
+Il **ne contient aucune logique métier**.
+
+---
+
+### DTO (contrat externe API)
 
 ```ts
 type UserDTO = {
   id: number;
   name: string;
-  created_at: string; // snake_case
-};
-
-type User = {
-  id: number;
-  name: string;
-  createdAt: Date; // camelCase + Date
+  created_at: string; // format JSON + snake_case
 };
 ```
 
-Souvent, on **sépare** DTO (Data Transfer Object) (API) et modèle métier (app).
+Caractéristiques :
 
-DTO : permet de transporter des données entre différentes couches d'une application, sans contenir de logique métier complexe. 
+- Respecte le format réseau
+- Compatible JSON
+- Pas de Date native
+- Pas de logique
+
+---
+
+### Modèle métier (interne application)
+
+```ts
+type User = {
+  id: number;
+  name: string;
+  createdAt: Date; // camelCase + type métier
+};
+```
+
+Caractéristiques :
+
+- Typage riche (`Date`)
+- Convention interne (camelCase)
+- Peut contenir de la logique
+
+---
+
+##  Pourquoi les séparer ?
+
+###  L’API est un contrat externe
+
+Vous ne la contrôlez pas toujours.
+
+###  Le métier évolue différemment
+
+Votre application peut avoir des règles, des transformations, des validations.
+
+---
+
+###  Le format réseau ≠ format métier
+
+- JSON → string
+- App → Date
+- snake_case → camelCase
+
+---
+
+## Exemple de transformation
+
+```ts
+function mapUserDTO(dto: UserDTO): User {
+  return {
+    id: dto.id,
+    name: dto.name,
+    createdAt: new Date(dto.created_at),
+  };
+}
+```
+
+👉 On transforme le contrat externe en modèle interne.
+
+---
+
+# ⚠ Le point clé
+
+> Le DTO définit un **contrat technique**
+> Le modèle métier définit une **structure métier**
+
+Les mélanger crée :
+
+- Couplage fort avec l’API
+- Dette technique
+- Bugs subtils liés aux formats
 
 ---
 

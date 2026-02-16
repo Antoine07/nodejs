@@ -108,17 +108,17 @@ server.listen(3001, () => {
     const user = { id: 1, name: "Ada" }; // { id : number, name : string }
 
 
-    const t : [string, number] = ["k", 1] ;
+    const t: [string, number] = ["k", 1];
 
     type User = {
         id: number;
         name: string;
-      };
-      
-      const u: User = {
+    };
+
+    const u: User = {
         id: 1,
         name: "Ada",
-      };
+    };
 
 })()
 
@@ -127,5 +127,65 @@ function safeNumber(input: string) {
     const n = Number(input);
     if (Number.isNaN(n)) return [null, "Not a number"] as const;
     return [n, null] as const;
-  }
-  
+}
+
+type Machin = {
+    a: number, b: string
+}
+
+const a: Partial<Machin> = {
+    a: 1
+}
+
+
+function computeAverageScore(n: number[], precision: number = 2) {
+    if (n.length == 0) throw new Error("Tableau vide")
+
+    const s = n.reduce((acc, x) => x + acc, 0);
+
+    return (s / n.length).toFixed(precision)
+}
+
+type Movie = {
+    id: number;
+    title: string;
+    rating: number;
+};
+
+function filterAndSortMovies(
+    movies: Movie[],
+    minRating: number,
+    sortBy: "rating" | "title"
+): Movie[] {
+    // retourne une nouvelle référence 
+    const filtered = movies.filter(m => m.rating > minRating)
+
+    return filtered.sort((a, b) => {
+        if (sortBy == "rating") return a.rating - b.rating
+
+        return a.title.localeCompare(b.title)
+    })
+}
+
+const movies: Movie[] = [
+    { id: 1, title: "Inception", rating: 8.8 },
+    { id: 2, title: "Avatar", rating: 7.8 },
+    { id: 3, title: "Interstellar", rating: 8.6 },
+];
+
+console.log(filterAndSortMovies(movies, 8, "rating"));
+console.log(filterAndSortMovies(movies, 7, "title"));
+
+console.log(movies)
+
+interface User {
+    id: number;
+}
+
+interface User {
+    name: string;
+}
+
+function g(user : User){}
+
+g({id : 1, name : "Alan"})
