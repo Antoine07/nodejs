@@ -141,7 +141,9 @@ type User = {
 };
 ```
 
-Souvent, on **sépare** DTO (API) et modèle métier (app).
+Souvent, on **sépare** DTO (Data Transfer Object) (API) et modèle métier (app).
+
+DTO : permet de transporter des données entre différentes couches d'une application, sans contenir de logique métier complexe. 
 
 ---
 

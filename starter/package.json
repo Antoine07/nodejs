@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
+    "sandbox": "tsx watch src/sandbox/index.ts",
     "typecheck": "tsc --watch --pretty --noEmit"
   },
   "devDependencies": {
