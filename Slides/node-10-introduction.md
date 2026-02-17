@@ -12,57 +12,80 @@ title: "Node.js — 10 Introduction (Node 24)"
 
 ---
 
-## C'est quoi Node.js ?
+# Pourquoi Node dans ce cours ?
+
+Cas métier : exposer une API (films / séances) et accéder à une base PostgreSQL.
+
+Objectif :
+- comprendre l’exécution (runtime) : “le programme tourne”
+- séparer exécution et typage : “le type-check protège”
+
+---
+
+# C’est quoi Node.js ?
 
 Node.js est un **runtime JavaScript** :
-- il exécute du JavaScript **hors navigateur**
-- il s'appuie sur **V8** (moteur JS) + **libuv** (I/O non bloquantes)
-- il donne accès à des APIs système : fichiers, réseau, processus, etc.
+- exécute du JavaScript **hors navigateur**
+- s’appuie sur **V8** (moteur JS)
+- fournit des APIs système (fichiers, réseau, processus…)
+- gère l’I/O via **libuv** (modèle asynchrone)
 
-Node.js n'est **pas** un langage : c'est une plateforme d'exécution pour JavaScript.
-
----
-
-## Un peu d'historique 
-
-- 2009 : Ryan Dahl présente Node.js (I/O non bloquantes, event loop)
-- npm devient l'écosystème de packages de référence
-- Node s'impose côté serveur et tooling (build, tests, scripts, CLIs)
-
-Avec Node 24, l'écosystème est "moderne" : ESM, APIs Web, TypeScript via tooling, etc.
+Node n’est pas un langage : c’est une plateforme d’exécution.
 
 ---
 
-## Pourquoi Node a "gagné" (dans beaucoup de stacks)
+# Un peu d’historique (repères)
 
-- même langage (JS/TS) côté front et back
-- **I/O** très efficaces (réseau, DB, fichiers)
-- énorme écosystème (npm)
-- très bon pour :
-  - APIs HTTP
-  - CLIs
-  - jobs (cron, workers)
-  - scripts/outillage
+- 2009 : Ryan Dahl présente Node.js (I/O non bloquantes + event loop)
+- npm devient le standard de distribution de packages
+- Node se généralise côté serveur et tooling (scripts, build, CLIs)
+
+Aujourd’hui (Node 24) : environnement moderne (ESM, APIs Web, tooling TS).
 
 ---
 
-## Runtime vs Type-check (rappel important)
+# Runtime vs TypeScript (rappel clé)
 
 TypeScript :
-- vérifie **avant l'exécution** (compile-time)
-- n'existe pas au runtime
+- vérifie **avant** l’exécution (compile-time)
+- disparaît au runtime (les types n’existent pas)
 
 Node :
 - exécute du JavaScript
-- ne "comprend" pas les types
+- ne “comprend” pas les types
 
-Conclusion : un projet TS a besoin d'un **workflow** (exécution + type-check).
+Conclusion : il faut un workflow (exécution + type-check).
 
 ---
 
-## Modules : CommonJS vs ESM (ECMAScript Modules)
+# Modèle mental : event loop (très simplifié)
 
-Deux systèmes existent :
+Node exécute JavaScript sur un **thread principal**.
+
+Pour l’I/O (réseau, DB, fichiers) :
+- on déclenche une opération asynchrone
+- le thread JS n’est pas bloqué
+- quand l’I/O termine, Node reprend via callbacks/promesses
+
+Résultat : très bon pour des applications **I/O-bound**.
+
+---
+
+# I/O-bound vs CPU-bound (cas métier)
+
+I/O-bound (souvent Node) :
+- API HTTP → attend DB / réseau
+- import/export de fichiers
+
+CPU-bound (vigilance) :
+- traitement image/vidéo
+- calculs lourds (parcours massif, crypto, ML)
+
+Quand c’est CPU-bound : envisager workers, queues, ou service dédié.
+
+---
+
+# Modules : CommonJS vs ESM
 
 CommonJS (historique) :
 ```js
@@ -73,56 +96,41 @@ module.exports = {};
 ESM (moderne) :
 ```ts
 import { readFile } from "node:fs/promises";
-export const x = 1; 
+export const x = 1;
 ```
 
-Dans ce repo, vous verrez souvent `type: "module"` (ESM).
+Dans ce repo : `type: "module"` → ESM (`import/export`).
 
 ---
 
-## APIs utiles "de base" en Node
+# APIs Node “de base” (à connaître)
 
-Quelques modules standards fréquents :
-- `node:fs` / `node:fs/promises` (fichiers)
-- `node:path` (paths)
-- `node:process` (argv, env, exit code)
-- `node:crypto` (hash, random, signatures…)
-- `node:http` (serveur HTTP bas niveau)
+- `node:http` : serveur HTTP bas niveau
+- `node:fs` / `node:fs/promises` : fichiers
+- `node:path` : chemins
+- `node:process` : environnement, arguments, exit codes
+- `node:crypto` : hash, random, signatures
 
----
-
-## Event loop 
-
-Node exécute JavaScript sur **un thread principal**.
-
-Le modèle :
-- vous lancez des opérations d'I/O (réseau/DB/fichiers)
-- Node attend leurs résultats sans bloquer le thread JS
-- quand une opération termine, son callback/promise se résout
-
-Résultat : très bon pour du serveur **I/O-bound**.
-
-🏷️ Définition: **I/O-bound** est une tâche qui passe plus de temps à attendre (réseau, disque, base de données) qu'à faire des calculs.
+Idée : comprendre les fondamentaux avant d’ajouter un framework.
 
 ---
 
-## Quand Node est un bon choix
+# Node 24 : ce qui compte ici
 
-- API HTTP / microservices
-- BFF (Backend For Frontend)
-- ingestion / jobs
-- tooling dev (scripts, build, lint)
-- temps réel (WebSocket, SSE) via libs
+- langage moderne (ES modules, top-level `await` selon config)
+- APIs Web présentes (ex: `fetch` côté serveur)
+- outillage “watch” possible (selon workflow)
 
-🏷️ Définition: Ingestion est l'action d'importer des données dans un système depuis une source externe.
-
-🏷️ Définition: Job, tâche automatisée, exécutée en arrière-plan, pour effectuer un traitement spécifique.
+Dans le cours : TypeScript passe par le tooling (`tsx`, `tsc`).
 
 ---
 
-## Quand il faut être vigilant
+# Workflow recommandé (double terminal)
 
-- CPU-bound (🏷️ calcul lourd) : le thread JS peut être saturé
-  - solutions : worker threads, queues, services dédiés
-- validation des entrées : TypeScript ne suffit pas (runtime)
-- dépendances : taille + sécurité (audit)
+Principe :
+- Terminal A : exécution (serveur HTTP)
+- Terminal B : type-check en continu
+
+Message clé :
+
+> TypeScript ne protège que si le type-check tourne.

@@ -4,225 +4,204 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/ts)"
-title: "Node.js — Connexion PostgreSQL (pg)"
+title: "Node.js — 12 Connexion PostgreSQL (pg)"
 ---
 
-#  Base de données (PostgreSQL)
+# 12 — Base de données (PostgreSQL)
 ## Connexion propre avec Node 24 + TypeScript (`pg`)
 
 ---
 
-## Principe : la DB est une frontière
+# Objectif du chapitre
 
-La base de données est :
-- **externe** (I/O, réseau)
-- **imprévisible** (timeouts, indisponibilité, données inattendues)
-- **non typée** par défaut (résultats SQL → runtime)
+- Comprendre la DB comme une **frontière** (I/O, instable, non typée)
+- Centraliser la configuration (env) et créer un `Pool`
+- Écrire des queries **paramétrées**
+- Introduire le pattern repository (HTTP ≠ SQL)
+
+Cas métier : lister des films et leurs séances.
+
+---
+
+# La DB est une frontière
+
+Pourquoi ?
+- réseau (latence, timeout)
+- service externe (indisponible)
+- données dynamiques (SQL → runtime)
 
 Conclusion :
-- on **isole** la DB dans un module dédié (`db/`)
-- on **valide** ce qui rentre / sort (schémas, mapping)
-- on **n'injecte pas** `Pool` partout : on passe par des repositories
+- on isole la DB dans un module dédié
+- on mappe ce qui sort de SQL vers des types métier
 
 ---
 
-## Notion de frontière et d'infrastructure
+# Configuration : valider les env vars (runtime)
 
-Votre domaine (logique métier, typé, prévisible)
-↔
-Un système externe (I/O, réseau, instable)
-
----
-
-## Setup : Docker Postgres - normalement tout est en place
-
-Typiquement, un `docker-compose.yml` fournit :
-- un service `postgres`
-- un service `app` avec des variables d'environnement DB
-
-Variables courantes :
-- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`
-
----
-
-
-## Installation des dépendances Node
-
-> Les dépendances sont ajoutées au projet (mise à jour de `package.json` et `package-lock.json`) avant le build Docker.
-
-Dans un projet Node / TypeScript :
-
-```bash
-npm install pg
-```
-
-Typage (selon version) :
-
-```bash
-npm install -D @types/pg
-```
-
----
-
-## Exemple : `db/config.ts` 
+Exemple (avec `zod`) :
 
 ```ts
-export type DbConfig = {
-  host: string;
-  port: number;
-  user: string;
-  password: string;
-  database: string;
-};
+import { z } from "zod";
 
-function required(value: string | undefined, name: string): string {
-  if (!value) throw new Error(`Missing env var: ${name}`);
-  return value;
-}
+const EnvSchema = z.object({
+  DB_HOST: z.string(),
+  DB_PORT: z.coerce.number(),
+  DB_USER: z.string(),
+  DB_PASSWORD: z.string(),
+  DB_NAME: z.string(),
+});
 
-export function getDbConfig(env: Record<string, string | undefined> = process.env) {
-  return {
-    host: required(env.DB_HOST, "DB_HOST"),
-    port: Number(env.DB_PORT ?? "5432"),
-    user: required(env.DB_USER, "DB_USER"),
-    password: required(env.DB_PASSWORD, "DB_PASSWORD"),
-    database: required(env.DB_NAME, "DB_NAME"),
-  } satisfies DbConfig;
-}
+export const env = EnvSchema.parse(process.env);
 ```
+
+Idée : échouer vite et clairement si la configuration est incomplète.
 
 ---
 
-## Exemple : `db/pool.ts` (Pool unique)
+# Connexion : un `Pool` unique
 
 ```ts
 import { Pool } from "pg";
-import { getDbConfig } from "./config.js";
-
-const config = getDbConfig();
+import { env } from "./config";
 
 export const pool = new Pool({
-  host: config.host,
-  port: config.port,
-  user: config.user,
-  password: config.password,
-  database: config.database,
+  host: env.DB_HOST,
+  port: env.DB_PORT,
+  user: env.DB_USER,
+  password: env.DB_PASSWORD,
+  database: env.DB_NAME,
 });
 ```
 
 Pourquoi un `Pool` ?
-- réutilise des connexions
+- réutilise les connexions
 - gère la concurrence
-- évite d'ouvrir/fermer à chaque requête
+- évite ouvrir/fermer à chaque requête
 
 ---
 
-## SQL : requêtes paramétrées (sécurité)
+# SQL paramétré (sécurité)
 
-Ne jamais concaténer l'entrée utilisateur dans du SQL.
+Ne jamais concaténer une entrée utilisateur dans du SQL.
 
 ```ts
 // ✅ paramétré
-await pool.query("select * from movies where name = $1", [name]);
+await pool.query("select * from movies where id = $1", [id]);
 
 // ❌ injection possible
-await pool.query(`select * from movies where name = '${name}'`);
+await pool.query(`select * from movies where id = ${id}`);
 ```
 
 ---
 
-## Repository : "art et manière"
+# Séparer HTTP et SQL : repository
 
-Objectif : éviter de mélanger :
-- HTTP (req/res)
-- SQL
-- règles métier
-
-Approche :
-- HTTP handler → appelle un repository
-- repository → fait la query + mappe le résultat
-
----
-
-## Exemple : `MovieRepository`
+Objectif : éviter un handler HTTP qui fait “tout”.
 
 ```ts
-import type { Pool } from "pg";
-
-export type MovieRow = { name: string; price: number };
+export type Movie = { id: number; title: string };
 
 export class MovieRepository {
   constructor(private readonly pool: Pool) {}
 
-  async list(): Promise<MovieRow[]> {
-    const result = await this.pool.query("select name, price from movies order by name asc");
-    return result.rows.map((r) => ({ name: String(r.name), price: Number(r.price) }));
+  async list(): Promise<Movie[]> {
+    const result = await this.pool.query<{ id: number; title: string }>(
+      "select id, title from movies order by title asc"
+    );
+    return result.rows;
   }
 }
 ```
 
-Note : on mappe au runtime (`String/Number`) car SQL n'est pas typé par défaut.
+---
+
+# Exemple métier : séances d’un film
+
+```ts
+export type Screening = {
+  id: number;
+  movieId: number;
+  startsAt: string; // simplifié pour débutants
+};
+
+export class ScreeningRepository {
+  constructor(private readonly pool: Pool) {}
+
+  async listByMovieId(movieId: number): Promise<Screening[]> {
+    const result = await this.pool.query<Screening>(
+      "select id, movie_id as \"movieId\", starts_at::text as \"startsAt\" from screenings where movie_id = $1 order by starts_at asc",
+      [movieId]
+    );
+    return result.rows;
+  }
+}
+```
+
+Le `::text` permet d’éviter de gérer des conversions de dates au début.
 
 ---
 
-## Brancher au serveur HTTP (GET)
+# Brancher au serveur HTTP (GET)
 
 ```ts
-import { createServer } from "node:http";
-import { pool } from "./db/pool.js";
-import { MovieRepository } from "./repositories/movieRepository.js";
+const movieRepo = new MovieRepository(pool);
+const screeningRepo = new ScreeningRepository(pool);
 
-const repo = new MovieRepository(pool);
-
-const server = createServer(async (req, res) => {
-  if (req.method === "GET" && req.url === "/movies") {
-    const items = await repo.list();
-    res.writeHead(200, { "content-type": "application/json; charset=utf-8" });
-    return res.end(JSON.stringify({ items }));
-  }
-
-  res.writeHead(404).end();
-});
-
-server.listen(3000);
+if (method === "GET" && path === "/movies") {
+  const items = await movieRepo.list();
+  return sendJson(res, 200, { items });
+}
 ```
 
 ---
 
-## Erreurs : ne pas exposer la DB
+# `GET /movies/:id/screenings` (route param)
 
-À faire :
+```ts
+const segments = path.split("/").filter(Boolean);
+
+if (method === "GET" && segments[0] === "movies" && segments[2] === "screenings") {
+  const movieId = Number(segments[1]);
+  if (Number.isNaN(movieId)) return sendJson(res, 400, { error: "Invalid movieId" });
+
+  const items = await screeningRepo.listByMovieId(movieId);
+  return sendJson(res, 200, { movieId, items });
+}
+```
+
+---
+
+# Erreurs : ne pas exposer la DB
+
+Bon réflexe :
 - log côté serveur (message + contexte)
 - réponse HTTP générique (`500`) sans détails sensibles
 
 À éviter :
-- renvoyer le message SQL complet au client
-- exposer host/user/stacktrace
+- renvoyer la query SQL / stacktrace au client
 
 ---
 
-## Healthcheck DB (très utile)
+# Healthcheck DB (très utile)
 
 Endpoint interne :
 - `GET /health/db` fait un `select 1`
 - si OK → `200`
 - sinon → `503`
 
-Cela aide :
-- Docker / orchestrateurs
-- supervision
-- diagnostics
+Utile pour Docker / supervision / diagnostics.
 
 ---
 
-## À retenir
+# À retenir
 
-- Un `Pool` unique, configuration centralisée, échec rapide si env incomplet.
-- Queries paramétrées, mapping runtime.
-- Repositories pour séparer HTTP et SQL.
-- Commencer en `GET`, puis étendre vers `POST/PUT/PATCH/DELETE` avec validation du body.
+- Env = frontière → validation runtime
+- `Pool` unique + SQL paramétré
+- Repositories pour séparer HTTP et DB
+- Commencer simple (GET) puis étendre avec validation runtime
 
+---
 
-## TP - réfléchir à deux 
+# TP
 
-`TPs/Movie`
+`TPs/Movie/tp-movie.md`

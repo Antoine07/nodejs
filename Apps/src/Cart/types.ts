@@ -1,17 +1,3 @@
-export interface Storable {
-    setValue(key: string, value: number): void;
-    reset(): void;
-    restore(key: string): void;
-    getStorage(): Record<string, number>;
-}
-
-export interface AsyncStorable {
-    setValue(name: string, price: number): Promise<void>;
-    restore(name: string): Promise<void>;
-    reset(): Promise<void>;
-    getStorage(): Promise<Record<string, number>>;
-}
-
 export interface Productable {
     getName(): string;
     getPrice(): number;
@@ -31,3 +17,10 @@ export type PgConfig = {
     database: string;
     ssl?: boolean;
 };
+
+export interface Storable<T, U>{
+    setValue(key: string, value: number): T;
+    reset(): T;
+    restore(key: string): T;
+    getStorage(): U;
+}

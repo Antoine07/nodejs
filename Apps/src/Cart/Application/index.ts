@@ -1,13 +1,18 @@
 import { pool } from "../Infrastructure/DB";
 import { PgStorage } from "../Infrastructure/PgStorage";
+import { StorageArray } from "../Infrastructure/ArrayStorage"
 import { Cart } from "../Domain/Cart";
 import { Movie } from "../Domain/Movie";
 
 async function main() {
-    const storage = new PgStorage(pool);
+    const storage = new PgStorage(pool); // pg
+    //const storage = new StorageArray(); // array 
+
     const cart = new Cart(storage);
 
     await cart.reset()
+
+    console.log(Math.random())
 
     // utilisation
     const product = new Movie("Twin Peaks", 100)

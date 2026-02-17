@@ -1,20 +1,57 @@
+# Exercice — Tirage aléatoire asynchrone (union discriminée)
 
-# Exercice — Tirage aléatoire asynchrone
+## Contexte
 
-On souhaite simuler un service distant qui effectue un tirage aléatoire
+On souhaite simuler un service distant qui effectue un tirage aléatoire.
 
-1. Créer un type `DrawResult` :
+Objectif : modéliser un résultat **success / error** avec une **union discriminée** (discriminant `ok`).
 
-2. Implémenter une fonction :
+## Travail demandé
 
-* attendre 500 ms (via `setTimeout`)
-* générer un nombre aléatoire entre 0 et 10
-* si le nombre est ≥ 5 → retourner `{ ok: true, value: number }`
-* sinon → retourner `{ ok: false, error: "TOO_SMALL" }`
+### 1) Créer le type `DrawResult`
 
-4. Utiliser la fonction et afficher :
+Créez un type `DrawResult` qui représente **exactement deux formes** :
 
-* `"Success: [value]"` si succès
-* `"Error: [error]"` si erreur
+- succès : `{ ok: true, value: number }`
+- erreur : `{ ok: false, error: "TOO_SMALL" }`
 
-⚠️ Ne pas utiliser `any` ni `as`.
+### 2) Implémenter la fonction `draw`
+
+Implémentez une fonction asynchrone :
+
+```ts
+async function draw(): Promise<DrawResult> {
+  // ...
+}
+```
+
+Comportement :
+
+- attendre 500 ms (via `setTimeout`)
+- générer un nombre aléatoire entre 0 et 10 (inclus)
+- si le nombre est ≥ 5 → retourner `{ ok: true, value }`
+- sinon → retourner `{ ok: false, error: "TOO_SMALL" }`
+
+### 3) Utiliser la fonction et afficher
+
+Appelez `draw()` puis affichez :
+
+- `"Success: [value]"` si succès
+- `"Error: [error]"` si erreur
+
+## Contraintes
+
+- ne pas utiliser `any`
+- ne pas utiliser `as`
+
+## Indice (typage)
+
+Si le type de retour est bien `Promise<DrawResult>`, TypeScript vous aidera à faire du narrowing via :
+
+```ts
+if (result.ok) {
+  // succès
+} else {
+  // erreur
+}
+```

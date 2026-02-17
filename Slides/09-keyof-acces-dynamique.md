@@ -4,191 +4,142 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/ts)"
-title: "TypeScript — keyof et accès dynamique"
+title: "TypeScript — 9 `keyof` et accès dynamique"
 ---
 
-# `keyof` et accès dynamique
+# 9 — `keyof` et accès dynamique
 ## Manipuler des clés en sécurité
 
 ---
 
-# `keyof` : l'union des clés
+# Objectif du chapitre
 
-```ts
-type User = { id: number; name: string; email?: string };
-
-type UserKey = keyof User;
-// "id" | "name" | "email"
-```
+- Comprendre `keyof` (union de clés)
+- Écrire un `get` typé : `T[K]`
+- Écrire un `pluck` typé (extraire une “colonne”)
+- Comprendre le piège des index signatures (`Record<string, ...>`)
 
 ---
 
-# Accès dynamique naïf (pas safe)
+# Problème réel : clé dynamique “pas safe”
+
+Cas métier : un tableau (UI) veut afficher une colonne choisie par l’utilisateur.
 
 ```ts
-type User = { id: number; name: string };
-const u: User = { id: 1, name: "Ada" };
+type Movie = { id: number; title: string; rating: number };
 
-function get(user: User, key: string) {
-  return user[key]; // erreur (ou any) : key peut être n'importe quoi
+function getMovieField(movie: Movie, key: string) {
+  return movie[key]; // pas safe : key peut être n'importe quoi
 }
 ```
 
+Si `key = "raiting"`, l’erreur arrive trop tard (voire en silence).
+
 ---
 
-# `K extends keyof T` : version safe
+# `keyof` : union des clés d’un objet
+
+```ts
+type Movie = { id: number; title: string; rating: number };
+type MovieKey = keyof Movie;
+// "id" | "title" | "rating"
+```
+
+Objectif : restreindre `key` à un ensemble fini de clés valides.
+
+---
+
+# `K extends keyof T` : accès dynamique typé
 
 ```ts
 function get<T, K extends keyof T>(obj: T, key: K): T[K] {
   return obj[key];
 }
 
-const u = { id: 1, name: "Ada" };
-const id = get(u, "id");     // number
-const name = get(u, "name"); // string
-// get(u, "age"); // erreur
+const m = { id: 1, title: "Heat", rating: 4.5 };
+const title = get(m, "title"); // string
+// get(m, "raiting"); // erreur
 ```
+
+Point clé : le type de retour n’est pas “au hasard”, c’est `T[K]`.
 
 ---
 
-# `pluck` : extraire une colonne
+# Exemple métier : `pluck` (extraire une colonne)
 
 ```ts
-function pluck<T, K extends keyof T>(arr: T[], key: K): Array<T[K]> {
-  return arr.map((item) => item[key]);
+function pluck<T, K extends keyof T>(items: T[], key: K): Array<T[K]> {
+  return items.map((item) => item[key]);
 }
 
-const users = [
-  { id: 1, name: "Ada" },
-  { id: 2, name: "Linus" },
+const movies = [
+  { id: 1, title: "Heat", rating: 4.5 },
+  { id: 2, title: "Alien", rating: 4.7 },
 ];
 
-const ids = pluck(users, "id");     // number[]
-const names = pluck(users, "name"); // string[]
+const titles = pluck(movies, "title");  // string[]
+const ratings = pluck(movies, "rating"); // number[]
 ```
 
 ---
 
-# Piège : index signatures trop larges
+# Exemple métier : `set` typé (immuable)
+
+Cas métier : un bouton active/désactive un utilisateur (sans mutation).
 
 ```ts
-type Dict = Record<string, number>;
+function set<T, K extends keyof T>(obj: T, key: K, value: T[K]): T {
+  return { ...obj, [key]: value };
+}
+
+type User = { id: number; name: string; active: boolean };
+
+const user: User = { id: 1, name: "Alice", active: false };
+const updated = set(user, "active", true);
 ```
 
-Cela signifie :
-
-> "un objet dont **toutes les clés possibles de type string** ont une valeur number."
-
-Donc TypeScript comprend :
-
-```
-clé possible = n'importe quel string
-```
+`value: T[K]` empêche `set(user, "active", "yes")`.
 
 ---
 
->`Record<string, number>` est équivalent à :
+# Piège : `Record<string, number>`
 
 ```ts
-type Dict = {
-  [key: string]: number;
-};
-
+type Metrics = Record<string, number>;
+type Keys = keyof Metrics; // string
 ```
 
----
-
->Les clés d'un Record sont `string | number | symbol`
+Ici, `keyof` vaut `string` car **toutes les clés** (n’importe quelle string) sont possibles.
 
 ---
 
-#  Comparaison claire
+# Comparaison : clés finies vs clés infinies
 
-## Clés connues
+Clés finies (objet “structuré”) :
 
 ```ts
 const obj = { a: 1, b: 2 };
-type Keys = keyof typeof obj;
+type Keys = keyof typeof obj; // "a" | "b"
 ```
 
-👉 `Keys` = `"a" | "b"`
-
-Ensemble fini.
-
----
-
-##  Record<string, number>
+Clés infinies (dictionnaire) :
 
 ```ts
 type Dict = Record<string, number>;
-type Keys = keyof Dict;
+type Keys = keyof Dict; // string
 ```
-
-👉 `Keys` = `string`
-
-Pourquoi ?
-
-Parce que l'objet peut contenir :
-
-```ts
-{ a: 1 }
-{ x: 1 }
-{ randomKey123: 1 }
-{ anything: 1 }
-```
-
-Les clés ne sont pas finies.
 
 ---
 
-# 🎯 Pourquoi c'est un piège ?
+# À retenir
 
-Beaucoup pensent que :
-
-```ts
-const d: Dict = { a: 1 };
-```
-
-implique :
-
-```
-keyof d === "a"
-```
-
-Mais non.
-
-`Dict` dit :
-
-> Cet objet peut avoir n'importe quelle clé string.
-
-Donc TypeScript ne peut pas restreindre.
+- `keyof T` = union des clés de `T`
+- `T[K]` = type de la propriété `K` dans `T`
+- `K extends keyof T` = “clé valide” (refactor-safe)
+- `Record<string, ...>` = dictionnaire à clés “illimitées” (`keyof` → `string`)
 
 ---
 
-#  Exemple qui surprend
+# Exercice
 
-```ts
-type Dict = Record<string, number>;
-
-function get<K extends keyof Dict>(key: K) {}
-
-get("hello");   // OK
-get("anything"); // OK
-```
-
-Parce que `keyof Dict` = `string`.
-
-Donc toutes les strings sont autorisées.
-
----
-
-# Exercice — `set`
-
-Écrire une fonction, elle retourne un nouvel objet avec la clé mise à jour.
-
-```ts
-console.log(user)
-// { id: 1, name: 'Alice', active: false } 
-console.log(updated)
-// { id: 1, name: 'Alice', active: true }   
-```
+`Exercices/09-keyof-acces-dynamique.md`

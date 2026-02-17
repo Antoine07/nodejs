@@ -1,7 +1,7 @@
-import { AsyncStorable as Storable } from "../types";
+import { Storable } from "../types";
 import { Pool } from "pg";
 
-export class PgStorage implements Storable {
+export class PgStorage implements Storable<Promise<void>,Promise<Record<string, number>> > {
 
     constructor(private pool: Pool) {}
 

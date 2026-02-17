@@ -12,7 +12,59 @@ title: "TypeScript — 5 Unions & narrowing"
 
 ---
 
-# Unions : un type, plusieurs formes possibles
+# Objectif du chapitre
+
+- Écrire des unions (`A | B`) pour rendre les états explicites
+- Faire du narrowing avec `typeof`, `in`, et `===`
+- Modéliser des résultats “success / error” sans champs optionnels
+- Rendre des états impossibles… impossibles
+
+---
+
+# Problème réel : résultat “flou”
+
+```ts
+type Result = {
+  ok: boolean;
+  value?: number;
+  error?: string;
+};
+```
+
+Problème : on peut avoir `ok=true` *et* `error`.
+
+La lecture du code devient plus difficile : “quels champs existent vraiment ?”
+
+---
+
+# Solution : union de deux formes exclusives
+
+```ts
+type Result =
+  | { ok: true; value: number }
+  | { ok: false; error: string };
+```
+
+Ici, `ok` devient un **discriminant** : il permet de savoir quelle forme on a.
+
+---
+
+# Narrowing sur le discriminant
+
+```ts
+function print(r: Result) {
+  if (r.ok) {
+    return `value=${r.value}`;
+  }
+  return `error=${r.error}`;
+}
+```
+
+Dans chaque branche, TypeScript connaît la forme exacte.
+
+---
+
+# Unions simples (primitives)
 
 ```ts
 type Id = string | number;
@@ -22,59 +74,7 @@ function toIdString(id: Id) {
 }
 ```
 
->Le vrai gain arrive quand les branches ont des comportements différents.
-
----
-
-**Narrowing** : mécanisme par lequel TypeScript réduit automatiquement un type large vers un type plus précis en fonction d'un test (typeof, instanceof, in, comparaison stricte, discriminant, truthiness, ou type guard).
-
-Nous ne verrons qu'ici : typeof, in, la comparaison stricte (===) sur des littéraux, et les unions discriminées (via une propriété comme state ou ok).
-
----
-
->Le narrowing permet de dire : "Dans cette branche, je suis sûr que c’est l’un des deux."
-
----
-
-## 🎯 Donc la règle simple
-
->Vous faites du narrowing quand :
-TypeScript ne peut pas garantir que la propriété existe.
-
->Sinon, inutile.
-
----
-
-## Utile
-
-```ts
-function printEmail(email: string | null) {
-  if (!email) {
-    return "No email";
-  }
-
-  return email.toLowerCase(); // sûr
-}
-```
-
----
-
-## Inutile
-
-```ts
-function double(n: number) {
-  if (typeof n === "number") {
-    return n * 2;
-  }
-
-  return 0;
-}
-
-// correction 
-function double(n: number) {
-  return n * 2;
-}
-```
+Le gain est maximal dès que chaque branche a un comportement différent.
 
 ---
 
@@ -82,14 +82,10 @@ function double(n: number) {
 
 ```ts
 function format(value: string | number) {
-  if (typeof value === "number") {
-    return value.toFixed(2);
-  }
+  if (typeof value === "number") return value.toFixed(2);
   return value.trim();
 }
 ```
-
->Dans chaque branche, TS "sait" le type exact.
 
 ---
 
@@ -101,9 +97,7 @@ type User = { role: "user"; plan: "free" | "pro" };
 type Account = Admin | User;
 
 function getLabel(a: Account) {
-  if ("permissions" in a) {
-    return `Admin (${a.permissions.length})`;
-  }
+  if ("permissions" in a) return `Admin (${a.permissions.length})`;
   return `User (${a.plan})`;
 }
 ```
@@ -122,78 +116,26 @@ function isFinal(status: PaymentStatus) {
 
 ---
 
-# `as const` : obtenir un discriminant automatiquement
+# `as const` : conserver un discriminant dans un retour
 
 ```ts
 function parseAge(input: string) {
   const n = Number(input);
-
-  if (Number.isNaN(n)) {
-    return { ok: false, error: "INVALID_AGE" } as const;
-  }
-
+  if (Number.isNaN(n)) return { ok: false, error: "INVALID_AGE" } as const;
   return { ok: true, value: n } as const;
 }
 
 const r = parseAge("12");
 
-if (r.ok) {
-  r.value; // number
-} else {
-  r.error; // "INVALID_AGE"
-}
+if (r.ok) r.value; // number
+else r.error; // "INVALID_AGE"
 ```
 
-`ok` devient un discriminant (`true`/`false`) qui permet un narrowing fiable.
+`as const` aide à garder `ok` et `error` sous forme de littéraux.
 
 ---
 
-`as const` permet d'obtenir un **type de retour précis sous forme d'union discriminée**, au lieu d'un objet flou avec des champs optionnels.
-
----
-
-### Différence sur le type de retour
-
-Sans `as const` :
-
-```ts
-// Type inféré
-{
-  ok: boolean;
-  error?: string;
-  value?: number;
-}
-```
-
-Avec `as const` :
-
-```ts
-// Type inféré
-| { readonly ok: false; readonly error: "INVALID_AGE" }
-| { readonly ok: true;  readonly value: number }
-```
-
-👉 Ce n'est plus "un objet avec des propriétés optionnelles",
-mais **deux formes strictes et exclusives**.
-
----
-
-# États impossibles : exemple UI naïf
-
-```ts
-// anti-pattern : tout est optionnel / nullable
-type Ui = {
-  loading: boolean;
-  data?: { items: string[] };
-  error?: string;
-};
-```
-
->Problème : `loading=true` + `error` + `data` peut coexister.
-
----
-
-# États impossibles : version robuste (union)
+# États impossibles (UI) : union discriminée
 
 ```ts
 type Ui =
@@ -203,7 +145,7 @@ type Ui =
   | { state: "error"; message: string };
 ```
 
->Ici, certains combos sont *impossibles* par construction.
+Certains combos deviennent impossibles (ex: `loading` + `error` + `data`).
 
 ---
 
@@ -211,31 +153,31 @@ type Ui =
 
 ```ts
 function render(ui: Ui) {
-  if (ui.state === "success") {
-    return ui.data.items.join(", ");
+  switch (ui.state) {
+    case "success":
+      return ui.data.items.join(", ");
+    case "error":
+      return ui.message;
+    default:
+      return ui.state; // "idle" | "loading"
   }
-  if (ui.state === "error") {
-    return ui.message;
-  }
-  return ui.state; // "idle" | "loading"
 }
 ```
 
 ---
 
-# Cas d'usage : réponses API
+# Cas d'usage : réponses API génériques
 
 ```ts
 type ApiResult<T> =
   | { ok: true; data: T }
   | { ok: false; error: { code: string; message: string } };
-
-function unwrap<T>(r: ApiResult<T>) {
-  if (!r.ok) throw new Error(r.error.message);
-  return r.data;
-}
 ```
 
-## Exercice
+L'appelant doit gérer les deux branches : le code devient plus sûr et plus explicite.
 
-`Exercice/05-unions-narrowing.md`
+---
+
+# Exercice
+
+`Exercices/05-unions-narrowing.md`

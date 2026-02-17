@@ -47,6 +47,6 @@ async function handler(
 
 const server = createServer(handler);
 
-server.listen(3000, "0.0.0.0", (): void => {
-  console.log("Server running on http://localhost:3000");
+server.listen(3001, "0.0.0.0", (): void => {
+  console.log("Server running on http://localhost:3001");
 });

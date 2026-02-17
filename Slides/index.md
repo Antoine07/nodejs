@@ -22,7 +22,6 @@ Dépôt: https://github.com/Antoine07/ts
 - [Types & inférence](./02-types-inference.html)
 - [Fonctions](./03-fonctions.html)
 - [Objets & structures](./04-objets-structures.html)
-- [Unions & narrowing](./05-unions-narrowing.html)
 
 ---
 

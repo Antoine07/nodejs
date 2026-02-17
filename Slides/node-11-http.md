@@ -4,41 +4,41 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/ts)"
-title: "Node.js — HTTP (node:http)"
+title: "Node.js — 11 HTTP (node:http)"
 ---
 
-#  Node.js
+# 11 — Node.js
 ## Le module `node:http` (serveur HTTP)
 
 ---
 
-## Pourquoi `node:http` ?
+# Objectif du chapitre
 
-`node:http` est l’API bas niveau pour :
-- recevoir des requêtes HTTP
-- renvoyer des réponses (status, headers, body)
+- Comprendre requête / réponse HTTP
+- Créer un serveur `node:http` en TypeScript
+- Router “à la main” (méthode + chemin)
+- Parser simplement `path` et `query`
 
-Des frameworks (Express, Fastify, Nest…) s’appuient souvent dessus.
-Ici, l’objectif est de comprendre les fondamentaux.
+Cas métier : mini API “films / séances”.
 
 ---
 
-## Rappels HTTP (essentiel)
+# Rappels HTTP (essentiel)
 
 Une requête HTTP = :
-- **méthode** (verbe) : `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, …
-- **URL** : `/`, `/health`, `/movies?limit=10`
-- **headers** : `Content-Type`, `Authorization`, …
-- **body** (optionnel) : surtout pour `POST/PUT/PATCH`
+- méthode : `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, …
+- URL : `/health`, `/movies?limit=10`
+- headers : `Content-Type`, `Authorization`, …
+- body (optionnel) : surtout pour `POST/PUT/PATCH`
 
 Une réponse HTTP = :
-- **status code** : `200`, `201`, `400`, `404`, `500`, …
-- **headers**
-- **body**
+- status code : `200`, `201`, `400`, `404`, `500`, …
+- headers
+- body
 
 ---
 
-## Les verbes HTTP (intention)
+# Les verbes HTTP (intention)
 
 - `GET` : lire une ressource
 - `POST` : créer / déclencher une action
@@ -46,90 +46,93 @@ Une réponse HTTP = :
 - `PATCH` : modifier partiellement
 - `DELETE` : supprimer
 
-En pratique, ce sont des conventions : votre API doit être cohérente.
+Dans ce chapitre, focus sur `GET` (fondamentaux).
 
 ---
 
-## Créer un serveur HTTP  - Testez ce code dans Docker
+# Serveur HTTP minimal (TypeScript)
 
 ```ts
-import { createServer, type IncomingMessage, type ServerResponse } from "node:http"
+import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 
-function sendJson(res: ServerResponse, status: number, data: unknown) {
-    res.writeHead(status, { "content-type": "application/json; charset=utf-8" });
-    res.end(JSON.stringify(data));
+function sendJson(res: ServerResponse, status: number, data: unknown): void {
+  res.writeHead(status, { "content-type": "application/json; charset=utf-8" });
+  res.end(JSON.stringify(data));
 }
 
 const server = createServer((req: IncomingMessage, res: ServerResponse) => {
-    const method = req.method ?? "GET";
-    const url = req.url ?? "/";
+  const method = req.method ?? "GET";
+  const rawUrl = req.url ?? "/";
+  const path = rawUrl.split("?", 2)[0] ?? "/";
 
-    if (method === "GET" && url === "/health") {
-        return sendJson(res, 200, { ok: true });
-    }
+  if (method === "GET" && path === "/health") {
+    return sendJson(res, 200, { ok: true });
+  }
 
-    return sendJson(res, 404, { ok: false, error: "Not found" });
+  return sendJson(res, 404, { ok: false, error: "Not Found" });
 });
 
-server.listen(3000, "0.0.0.0", () => console.log("http://localhost:3000"));
+server.listen(3000, "0.0.0.0");
 ```
 
 ---
 
-## Routage (la base)
+# Parser une query simplement
 
-Le routage, ici, c’est :
-- inspecter `req.method`
-- inspecter `req.url`
-- choisir une réponse
-
-Dans un vrai projet, on extrait ça :
-- `router.ts`
-- handlers par route
-- validation des entrées
-
----
-
-## Query params (avec `URL`)
-
-`req.url` est une string. Pour parser proprement :
+Objectif : supporter `GET /movies?limit=2`
 
 ```ts
-const requestUrl = new URL(req.url ?? "/", "http://localhost");
-const limit = Number(requestUrl.searchParams.get("limit") ?? "10");
+const rawUrl = req.url ?? "/";
+const [path, queryString = ""] = rawUrl.split("?", 2);
+const params = new URLSearchParams(queryString);
+
+const limit = Number(params.get("limit") ?? "10");
 ```
 
-Note : l’host dans `URL()` sert juste de base.
+Note : `URLSearchParams` parse une query string, sans construire une URL complète.
 
 ---
 
-## Exemple : endpoint “GET /movies”
-
-Idée :
-- `GET /movies` retourne une liste
-- `GET /movies?limit=2` limite le résultat
+# Exemple métier : `GET /movies`
 
 ```ts
-const movies = ["Twin Peaks", "Mulholland Drive", "Heat"];
-// ...
-if (method === "GET" && requestUrl.pathname === "/movies") {
-  const limit = Number(requestUrl.searchParams.get("limit") ?? String(movies.length));
+const movies = ["Heat", "Alien", "Arrival"];
+
+if (method === "GET" && path === "/movies") {
+  const [_, queryString = ""] = rawUrl.split("?", 2);
+  const params = new URLSearchParams(queryString);
+  const limit = Number(params.get("limit") ?? String(movies.length));
+
   return sendJson(res, 200, { items: movies.slice(0, limit) });
 }
 ```
 
 ---
 
-## `POST` 
+# Paramètres de route (sans framework)
 
-Pour `POST/PUT/PATCH`, il faut lire le body :
-- streaming (`req.on("data")`)
-- ou helpers utilitaires
+Objectif : `GET /movies/42/screenings`
 
-Points importants :
+```ts
+const segments = path.split("/").filter(Boolean);
+// "/movies/42/screenings" -> ["movies", "42", "screenings"]
+
+if (method === "GET" && segments[0] === "movies" && segments[2] === "screenings") {
+  const movieId = Number(segments[1]);
+  if (Number.isNaN(movieId)) return sendJson(res, 400, { error: "Invalid movieId" });
+
+  return sendJson(res, 200, { movieId, items: [] });
+}
+```
+
+---
+
+# Pourquoi `POST` demande plus de travail ?
+
+Pour `POST/PUT/PATCH`, il faut gérer :
+- lecture du body (stream)
+- `Content-Type` + parsing JSON
 - limites (taille max)
-- `Content-Type`
-- parsing JSON
-- validation runtime (`zod`, etc.)
+- validation runtime (TypeScript ne suffit pas)
 
-Dans ce chapitre, on se limite à `GET` pour se concentrer sur HTTP.
+On reviendra sur la validation quand on parlera du “monde réel” et de la DB.

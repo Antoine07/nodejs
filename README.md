@@ -43,6 +43,63 @@ http://localhost:3000/db
 ```
 
 
+## ⚙️ Configuration TypeScript
+
+En développement, tsx transpile le TypeScript en mémoire et exécute directement le JavaScript (pas de dossier dist).
+tsc --noEmit sert uniquement à vérifier strictement les types, sans générer de fichiers.
+Un build réel vers dist n'est produit que si l'on exécute tsc sans --noEmit.
+
+* **Target** : `ES2022`
+* **Module** : `ESNext`
+* **Resolution** : `Bundler` (optimisé pour outils modernes type tsx/esbuild)
+* **Root** : `src`
+* **Build output** : `dist`
+
+### Sécurité maximale
+
+* `strict` activé
+* `noUncheckedIndexedAccess`
+* `exactOptionalPropertyTypes`
+* `noImplicitReturns`
+
+### Environnement
+
+* Types Node activés
+* Librairie `ES2022`
+* `skipLibCheck` pour accélérer le build
+
+---
+
+## 🚀 Scripts
+
+```json
+"sandbox": "tsx watch src/Sandbox/index.ts",
+
+// Garantir la cohérence des types sans produire de build.
+"typecheck": "tsc --watch --pretty --noEmit"
+```
+
+### Fonctionnement
+
+* `tsx watch` : exécution directe des fichiers TypeScript (sans build)
+* `typecheck` : vérification stricte des types sans génération de JS
+
+---
+
+##  Architecture de compilation
+
+* Développement : exécution via `tsx` (transpilation en mémoire)
+* Vérification des types : `tsc --noEmit`
+* Build possible vers `dist` via `tsc` si nécessaire
+
+ `tsc --noEmit`
+
+✔ Vérifier les types
+❌ Ne générer aucun fichier JavaScript
+
+
+
+
 ## Base de données 
 
 ### Se connecter à la DB
@@ -103,4 +160,11 @@ Nettoyage "agressif" (attention : supprime aussi des images) :
 docker system prune -a
 ```
 
+
+
+
+
+
+
 >Bon dev à tous !!! Et surtout bonne découverte de TypeScript/Node
+

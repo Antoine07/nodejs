@@ -12,17 +12,63 @@ title: "TypeScript — 4 Objets & structures"
 
 ---
 
-# `type` vs `interface` (pratique)
+# Objectif du chapitre
 
-Deux outils proches, mais des usages classiques :
-- `interface` : forme d'objet "extensible" (souvent pour des modèles), contrat structurel extensible
-- `type` : compositions, unions, aliases, utilitaires, outil de composition avancée
-
-Dans beaucoup d'équipes : **préférence `type` par défaut**, `interface` pour objets publics/OO.
+- Décrire des structures (objets) de manière claire
+- Comprendre `type` vs `interface` (choix pratique)
+- Gérer optionnels et invariants (`readonly`)
+- Séparer DTO (API) et modèle métier
+- Utiliser `Record` pour des dictionnaires typés
 
 ---
 
-# Exemple avec `type`
+# Problème réel : objets “flous” en JavaScript
+
+En JavaScript, un objet peut être “presque bon”… et casser plus tard.
+
+```ts
+const user = { id: 1, fullName: "Ada" };
+
+function printUser(u: { id: number; name: string }) {
+  return `${u.id} ${u.name.toUpperCase()}`;
+}
+
+printUser(user); // bug : la propriété s'appelle fullName
+```
+
+TypeScript aide à rendre la **forme** explicite.
+
+---
+
+# Décrire une forme : le minimum utile
+
+```ts
+type User = {
+  id: number;
+  name: string;
+};
+
+function printUser(u: User) {
+  return `${u.id} ${u.name}`;
+}
+```
+
+Idée : si la donnée a une forme, on la décrit.
+
+---
+
+# `type` vs `interface` (choix pratique)
+
+Dans ce cours, règle simple :
+
+- `type` : par défaut (aliases, unions, compositions)
+- `interface` : contrat d’objet “public/OO” si besoin (ex: libs, extension)
+
+Les deux décrivent une forme d’objet, mais `type` est plus polyvalent.
+
+---
+
+# Propriétés optionnelles : `?`
 
 ```ts
 type User = {
@@ -30,39 +76,19 @@ type User = {
   name: string;
   email?: string;
 };
-```
 
----
-
-# Exemple avec `interface`
-
-```ts
-interface User {
-  id: number;
-  name: string;
-  email?: string;
+function formatEmail(u: User) {
+  return u.email?.toLowerCase() ?? "(no email)";
 }
 ```
 
-Différence visible surtout dans l'extension et le "merging" des interfaces.
+`email?: string` signifie : la propriété peut être absente (`string | undefined`).
 
 ---
 
-## Merging
+# `readonly` : protéger des invariants
 
-```ts
-interface User {
-  id: number;
-}
-
-interface User {
-  name: string;
-}
-```
-
----
-
-# `readonly` : éviter des mutations involontaires
+Quand une donnée ne doit pas être modifiée après création :
 
 ```ts
 type Session = {
@@ -76,115 +102,58 @@ const s: Session = { userId: "u1", createdAt: new Date(), token: "t" };
 s.token = "t2"; // ok
 ```
 
+`readonly` documente une intention et évite des mutations accidentelles.
+
 ---
 
-# `Record<K, V>` : dictionnaire typé
+# `Partial<T>` : mise à jour partielle (cas métier : “édition”)
+
+Cas concret : une page d’édition permet de modifier **une partie** d’un film (sans toucher à `id`).
 
 ```ts
-type Roles = "admin" | "editor" | "user";
-
-const permissions: Record<Roles, string[]> = {
-  admin: ["*"],
-  editor: ["write", "read"],
-  user: ["read"],
+type Movie = {
+  id: number;
+  title: string;
+  rating: number;
 };
+
+type UpdateMovieInput = Partial<Omit<Movie, "id">>;
+
+function applyMoviePatch(movie: Movie, patch: UpdateMovieInput): Movie {
+  return { ...movie, ...patch };
+}
+
+applyMoviePatch({ id: 1, title: "Heat", rating: 4.5 }, { rating: 4.6 }); // ok
+// applyMoviePatch(movie, { id: 2 }); // erreur
 ```
 
-Utile pour : mapping, lookup tables, i18n, feature flags.
+Idée : `Partial<T>` rend toutes les propriétés de `T` optionnelles (utile pour un “PATCH”).
 
 ---
 
-# Dictionnaire vs objet structuré
+# DTO (API) vs modèle métier (application)
 
-Objet structuré :
-```ts
-type User = { id: number; name: string };
-```
-
-Dictionnaire :
-```ts
-type UsersById = Record<number, User>;
-```
-
-Question à se poser : "mes clés sont-elles connues à l'avance ?"
-
----
-Voici une version plus claire, plus structurée et plus pédagogique.
-
----
-
-# DTO / API : respecter le **contrat de données**
-
-## 🎯 Idée centrale
-
-Un **DTO (Data Transfer Object)** sert uniquement à **transporter des données entre deux couches** :
-
-* Frontend ↔ API
-* API ↔ Backend
-* Backend ↔ Base de données
-
-Il **ne contient aucune logique métier**.
-
----
-
-### DTO (contrat externe API)
+Les données externes arrivent souvent au format JSON.
 
 ```ts
 type UserDTO = {
   id: number;
   name: string;
-  created_at: string; // format JSON + snake_case
+  created_at: string; // snake_case + string
 };
-```
 
-Caractéristiques :
-
-- Respecte le format réseau
-- Compatible JSON
-- Pas de Date native
-- Pas de logique
-
----
-
-### Modèle métier (interne application)
-
-```ts
 type User = {
   id: number;
   name: string;
-  createdAt: Date; // camelCase + type métier
+  createdAt: Date; // camelCase + Date
 };
 ```
 
-Caractéristiques :
-
-- Typage riche (`Date`)
-- Convention interne (camelCase)
-- Peut contenir de la logique
+Objectif : **découpler** votre code interne du format externe.
 
 ---
 
-##  Pourquoi les séparer ?
-
-###  L’API est un contrat externe
-
-Vous ne la contrôlez pas toujours.
-
-###  Le métier évolue différemment
-
-Votre application peut avoir des règles, des transformations, des validations.
-
----
-
-###  Le format réseau ≠ format métier
-
-- JSON → string
-- App → Date
-- snake_case → camelCase
-
----
-
-## Exemple de transformation
+# Mapper : transformer le contrat externe
 
 ```ts
 function mapUserDTO(dto: UserDTO): User {
@@ -196,23 +165,45 @@ function mapUserDTO(dto: UserDTO): User {
 }
 ```
 
-👉 On transforme le contrat externe en modèle interne.
+Résultat : votre domaine manipule des types “métiers” (ex: `Date`), même si l’API envoie des strings.
 
 ---
 
-# ⚠ Le point clé
+# `Record<K, V>` : dictionnaire typé
 
-> Le DTO définit un **contrat technique**
-> Le modèle métier définit une **structure métier**
+Quand vous voulez retrouver une donnée rapidement par clé :
 
-Les mélanger crée :
+```ts
+type User = { id: number; name: string };
+type UsersById = Record<number, User>;
 
-- Couplage fort avec l’API
-- Dette technique
-- Bugs subtils liés aux formats
+function indexUsers(users: User[]): UsersById {
+  const byId: UsersById = {};
+  for (const u of users) byId[u.id] = u;
+  return byId;
+}
+```
 
 ---
 
-## TP - réfléchir à deux
+# Dictionnaire vs objet structuré
 
-`TPs/tp-cart.md`
+Objet structuré (clés connues, stable) :
+
+```ts
+type Config = { env: "dev" | "prod"; port: number };
+```
+
+Dictionnaire (clés dynamiques, nombreuses) :
+
+```ts
+type UsersById = Record<number, { id: number; name: string }>;
+```
+
+Question simple : “les clés sont-elles connues à l’avance ?”
+
+---
+
+# Exercice
+
+`Exercices/04-objets-structures.md`

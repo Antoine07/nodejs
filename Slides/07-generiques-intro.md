@@ -7,33 +7,52 @@ header: "[index](https://antoine07.github.io/ts)"
 title: "TypeScript — 7 Génériques (intro)"
 ---
 
-# Génériques (intro)
-## Réutiliser sans perdre le typage
+# 7 — Génériques (intro)
+## Réutiliser sans perdre la précision des types
 
 ---
 
 # Objectif du chapitre
 
-- Comprendre pourquoi les génériques existent
-- Utiliser `<T>` pour lier entrée / sortie
-- Identifier les génériques inutiles (anti-pattern)
+- Comprendre le problème que résolvent les génériques
+- Utiliser `<T>` pour préserver une information (entrée → sortie)
+- Écrire des fonctions génériques simples (`first`, `map`, `pair`)
+- Repérer les génériques inutiles (bruit)
+- Éviter le piège : "générique" ≠ "validation runtime"
 
 ---
 
-# Pourquoi les génériques ?
+# Problème : du code dupliqué
 
-Sans génériques :
 ```ts
-function first(arr: any[]) {
+function firstNumber(arr: number[]) {
+  return arr[0];
+}
+
+function firstString(arr: string[]) {
   return arr[0];
 }
 ```
 
-Problème : on perd l'information. `first([1,2,3])` retourne `any`.
+Le code est identique, seul le type change.
 
 ---
 
-# Avec génériques : préserver l'info
+# Mauvaise solution : `any` (on perd l'info)
+
+```ts
+function first(arr: any[]) {
+  return arr[0];
+}
+
+const n = first([1, 2, 3]); // any
+```
+
+`any` supprime la sécurité et fait perdre l'autocomplétion.
+
+---
+
+# Bonne solution : un générique préserve l'info
 
 ```ts
 function first<T>(arr: T[]): T | undefined {
@@ -47,25 +66,21 @@ const u = first([{ id: 1 }]);     // { id: number } | undefined
 
 ---
 
+# Inférence : `T` est presque toujours deviné
+
 Dans la majorité des cas, on ne précise pas `T` : TypeScript l'infère à partir des arguments.
 
-On doit l'indiquer uniquement lorsque l'inférence est impossible (ex. aucune donnée en paramètre).
+On le précise surtout quand il n'y a pas assez d'informations (ex: aucun argument).
 
 ```ts
-function createEmpty<T>(): T {
-  return {} as T;
+function emptyArray<T>(): T[] {
+  return [];
 }
 
-interface User {
-  id: string;
-  name: string; 
-}
+type User = { id: number; name: string };
 
-const user = createEmpty<User>();
+const users = emptyArray<User>(); // User[]
 ```
-
-Ici, la fonction ne reçoit aucun argument :
-TypeScript ne peut pas deviner `T`, donc on doit le préciser explicitement.
 
 ---
 
@@ -84,22 +99,16 @@ const b = wrap(123); // { value: number }
 
 ---
 
-# Anti-pattern : générique inutile
+# Plusieurs types génériques (A, B…)
 
-`Ici T est inutile car il ne lie pas l'entrée à la sortie. De plus il n'est pas contraint (notion qu'on le voit dans le chapitre suivant). Le typage ici ajoute du bruit...`.
+Quand deux entrées n'ont pas le même type :
 
 ```ts
-// Mauvais : T ne sert à rien (on ne le réutilise pas)
-function logValue<T>(value: T): void {
-  console.log(value);
+function pair<A, B>(a: A, b: B): [A, B] {
+  return [a, b];
 }
-```
 
-Ici, un simple `unknown` est souvent suffisant :
-```ts
-function logValue(value: unknown): void {
-  console.log(value);
-}
+const p = pair(1, "hello"); // [number, string]
 ```
 
 ---
@@ -116,6 +125,52 @@ const lengths = map(["a", "ab"], (s) => s.length); // number[]
 
 ---
 
-# à retenir
+# Les génériques sont déjà partout
 
-**Un générique est utile lorsqu’il capture un type en entrée et le restitue en sortie sans en perdre la précision. S'il ne sert pas à préserver ou transmettre une information de type, il est généralement inutile.**
+```ts
+type A = Array<number>;          // number[]
+type B = Promise<string>;        // Promise<string>
+type C = Record<string, number>; // dictionnaire
+```
+
+Idée : `Type<...>` signifie "un type paramétré par d'autres types".
+
+---
+
+# Anti-pattern : générique "décoratif"
+
+Si `T` n'est pas réutilisé, il n'apporte souvent rien :
+
+```ts
+function toString<T>(value: T): string {
+  return String(value);
+}
+```
+
+Souvent, `unknown` suffit :
+
+```ts
+function toString(value: unknown): string {
+  return String(value);
+}
+```
+
+---
+
+# Piège : "générique" ne veut pas dire "validation"
+
+```ts
+function parseJson<T>(text: string): T {
+  return JSON.parse(text) as T;
+}
+```
+
+Ce code n'a aucune validation runtime : `T` peut être faux.
+
+---
+
+# À retenir
+
+- Un générique est utile s'il **préserve** une information de type (entrée → sortie)
+- Si `T` n'est pas réutilisé, il est souvent inutile (bruit)
+- Un générique ne remplace pas une validation runtime (API, JSON, formulaires)
