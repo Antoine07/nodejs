@@ -6,8 +6,8 @@ services:
       - .:/app
       - /app/node_modules
     ports:
-      - "3000:3000"
-    command: pnpm dev
+      - "3001:3001"
+    
     depends_on:
       - postgres
     environment:
@@ -16,6 +16,7 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: db
+      MACHINE_FILES: invalid-missing-tape.json,invalid-wrong-tape-type.json,valid-numbers.json
 
   postgres:
     image: postgres:17-alpine

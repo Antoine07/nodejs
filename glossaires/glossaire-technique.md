@@ -8,19 +8,19 @@ Les définitions sont volontairement orientées “pratique” : à quoi sert le
 ## TypeScript & typage
 
 **Annotation de type**  
-Ajout explicite d’un type à une variable, un paramètre ou un retour. Exemple : `function f(x: number): number { ... }`.
+Ajout explicite d'un type à une variable, un paramètre ou un retour. Exemple : `function f(x: number): number { ... }`.
 
 **Analyse statique (static analysis)**  
-Analyse du code sans l’exécuter. TypeScript est un analyseur statique : il déduit/valide des types avant le runtime.
+Analyse du code sans l'exécuter. TypeScript est un analyseur statique : il déduit/valide des types avant le runtime.
 
 **`any`**  
-Type qui désactive la sécurité (tout devient possible). À éviter : il masque des erreurs et “propage” l’absence de types.
+Type qui désactive la sécurité (tout devient possible). À éviter : il masque des erreurs et “propage” l'absence de types.
 
 **`unknown`**  
-Type sûr pour “donnée inconnue”. Oblige à vérifier (narrowing) avant d’utiliser la valeur.
+Type sûr pour “donnée inconnue”. Oblige à vérifier (narrowing) avant d'utiliser la valeur.
 
 **`never`**  
-Type d’un cas impossible. Sert notamment à forcer l’exhaustivité dans un `switch` sur une union discriminée.
+Type d'un cas impossible. Sert notamment à forcer l'exhaustivité dans un `switch` sur une union discriminée.
 
 **`null` / `undefined`**  
 Deux valeurs distinctes. En `strictNullChecks`, une variable `string` ne peut pas recevoir `null/undefined` sans union.
@@ -44,26 +44,26 @@ Fige un objet/array en lecture seule et conserve les types littéraux. Très uti
 Type qui peut prendre plusieurs formes. Exemple : `string | number`. Nécessite du narrowing pour utiliser la valeur.
 
 **Narrowing**  
-Réduction d’un type union vers un type plus précis via des checks (`typeof`, `in`, `===`, guards).
+Réduction d'un type union vers un type plus précis via des checks (`typeof`, `in`, `===`, guards).
 
 **Union discriminée (discriminated union)**  
-Union d’objets avec un champ “tag” commun (ex: `type`, `state`) permettant un `switch` lisible et exhaustif.
+Union d'objets avec un champ “tag” commun (ex: `type`, `state`) permettant un `switch` lisible et exhaustif.
 
 **Exhaustivité (exhaustive check)**  
-Assurance que tous les cas d’une union sont traités. Souvent via `switch` + `assertNever`.
+Assurance que tous les cas d'une union sont traités. Souvent via `switch` + `assertNever`.
 
 **Type guard**  
 Fonction qui vérifie une valeur au runtime et informe TypeScript du type dans la branche “true”.  
 Signature typique : `function isX(v: unknown): v is X { ... }`.
 
 **`type` vs `interface`**  
-Deux façons de décrire des formes. `type` est très polyvalent (unions, aliases) ; `interface` est souvent utilisé pour des “contrats d’objet”.
+Deux façons de décrire des formes. `type` est très polyvalent (unions, aliases) ; `interface` est souvent utilisé pour des “contrats d'objet”.
 
 **Propriété optionnelle (`?`)**  
 Propriété potentiellement absente. Exemple : `{ email?: string }` implique `email` de type `string | undefined`.
 
 **`readonly`**  
-Empêche l’affectation (mutation) sur une propriété. Utile pour éviter des modifications involontaires.
+Empêche l'affectation (mutation) sur une propriété. Utile pour éviter des modifications involontaires.
 
 **`Record<K, V>`**  
 Type dictionnaire : “un objet dont les clés sont `K` et les valeurs `V`”. Exemple : `Record<string, number>`.
@@ -75,7 +75,7 @@ Paramètre de type utilisé pour préserver une information entre entrée et sor
 Borne un générique. Exemple : `T extends { id: number }` signifie “T doit avoir `id: number`”.
 
 **`keyof`**  
-Produit l’union des clés d’un type objet. Exemple : `keyof User` → `"id" | "name" | ...`.
+Produit l'union des clés d'un type objet. Exemple : `keyof User` → `"id" | "name" | ...`.
 
 **Accès par clé (`T[K]`)**  
 Type de la propriété `K` dans `T`. Base des helpers `get`, `pluck`, `set` en typage sûr.
@@ -95,13 +95,13 @@ Zone où des données externes entrent : HTTP, DB, fichiers, `process.env`, `JSO
 Compilateur TypeScript. Sert à type-check (`--noEmit`) et/ou compiler TS → JS.
 
 **`tsx`**  
-Outil d’exécution de TypeScript en développement (watch, rechargement). Il ne remplace pas un type-check dédié.
+Outil d'exécution de TypeScript en développement (watch, rechargement). Il ne remplace pas un type-check dédié.
 
 **Type-check**  
 Vérification TypeScript (compile-time). Ne garantit pas la validité des données externes.
 
 **Runtime**  
-Moment où le programme s’exécute réellement. Les types TypeScript n’existent pas au runtime.
+Moment où le programme s'exécute réellement. Les types TypeScript n'existent pas au runtime.
 
 **Watch mode**  
 Mode où un outil surveille les fichiers et relance (ex: `tsc --watch`, `tsx watch`).
@@ -132,7 +132,7 @@ Système moderne de modules : `import/export`. Souvent activé via `type: "modul
 Ancien système Node : `require/module.exports`.
 
 **`process.env`**  
-Variables d’environnement. À considérer comme une frontière (strings, potentiellement manquantes).
+Variables d'environnement. À considérer comme une frontière (strings, potentiellement manquantes).
 
 ---
 
@@ -182,7 +182,7 @@ Langage de requêtes (select/insert/update/delete). Les résultats ne sont pas t
 Client PostgreSQL pour Node.
 
 **Pool (`pg.Pool`)**  
-Gestionnaire de connexions réutilisables. Plus performant et plus propre que d’ouvrir une connexion par requête.
+Gestionnaire de connexions réutilisables. Plus performant et plus propre que d'ouvrir une connexion par requête.
 
 **Query paramétrée**  
 Requête avec placeholders (`$1`, `$2`, …) + valeurs séparées. Évite les injections SQL.
@@ -193,7 +193,7 @@ Faille quand on concatène des entrées dans la requête SQL. À éviter via req
 **Schéma (`schema.sql`)**  
 Définition de tables, colonnes, contraintes, et parfois des données de départ (seed).
 
-**Seed (données d’exemple)**  
+**Seed (données d'exemple)**  
 Données insérées pour tester/démontrer le fonctionnement.
 
 ---
@@ -226,7 +226,7 @@ Découpage courant :
 - Server/Application : HTTP, orchestration, wiring
 
 **Repository (pattern)**  
-Objet qui encapsule l’accès aux données (SQL/DB) derrière une API TypeScript (`list()`, `findById()`, …).
+Objet qui encapsule l'accès aux données (SQL/DB) derrière une API TypeScript (`list()`, `findById()`, …).
 
 **Injection de dépendances (DI)**  
 Passer les dépendances (ex: repository, storage) en paramètre/constructeur plutôt que les créer “en dur”.
@@ -237,14 +237,14 @@ Passer les dépendances (ex: repository, storage) en paramètre/constructeur plu
 **SOLID**  
 Ensemble de principes pour un code maintenable :
 - SRP : une responsabilité par module/classe
-- OCP : ouvert à l’extension, fermé à la modification
+- OCP : ouvert à l'extension, fermé à la modification
 - LSP : substituabilité
 - ISP : interfaces petites et utiles
-- DIP : dépendre d’abstractions, pas de détails
+- DIP : dépendre d'abstractions, pas de détails
 
 **Refactor**  
 Modifier la structure interne du code sans changer le comportement externe (objectif : lisibilité, maintenabilité, sécurité).
 
 **Livrable**  
-Ce qui est attendu à la fin d’un TP (fichiers, endpoints, scripts, etc.).
+Ce qui est attendu à la fin d'un TP (fichiers, endpoints, scripts, etc.).
 

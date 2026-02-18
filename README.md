@@ -98,8 +98,6 @@ Un build réel vers dist n'est produit que si l'on exécute tsc sans --noEmit.
 ❌ Ne générer aucun fichier JavaScript
 
 
-
-
 ## Base de données 
 
 ### Se connecter à la DB
@@ -160,11 +158,11 @@ Nettoyage "agressif" (attention : supprime aussi des images) :
 docker system prune -a
 ```
 
+## Test
 
-
-
-
-
+```bash
+docker compose exec app pnpm test:run
+```
 
 >Bon dev à tous !!! Et surtout bonne découverte de TypeScript/Node
 

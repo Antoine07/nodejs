@@ -11,6 +11,8 @@
     "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
     "sandbox": "tsx watch src/Sandbox/index.ts",
+    "turing": "tsx watch src/Turing/Application/index.ts",
+    "input": "tsx watch src/TuringInput/Application/index.ts",
     "cart": "tsx watch src/Cart/Application/index.ts",
     "typecheck": "tsc --watch --pretty --noEmit"
   },

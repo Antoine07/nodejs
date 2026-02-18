@@ -36,5 +36,6 @@ Dépôt: https://github.com/Antoine07/ts
 # Plan 3/3
 
 - [Node.js — Introduction (Node 24)](./node-10-introduction.html)
+- [Node.js — Fichiers (ultra simple)](./node-13-fichiers.html)
 - [Node.js — Module `http`](./node-11-http.html)
 - [Node.js — Connexion PostgreSQL (`pg`)](./node-12-db.html)
