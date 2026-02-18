@@ -1,7 +1,7 @@
 import { Storable } from "../types";
 import { Pool } from "pg";
 
-export class PgStorage implements Storable<Promise<void>,Promise<Record<string, number>> > {
+export class PgStorage implements Storable<string, number> {
 
     constructor(private pool: Pool) {}
 
@@ -27,14 +27,6 @@ export class PgStorage implements Storable<Promise<void>,Promise<Record<string, 
     async reset(): Promise<void> {
         await this.pool.query(
             `TRUNCATE TABLE cart_storage`);
-    }
-
-    async total(): Promise<number> {
-        const result = await this.pool.query(
-            `SELECT COALESCE(SUM(price), 0) AS total FROM cart_storage`
-        );
-
-        return Number(result.rows[0].total);
     }
 
     async getStorage(): Promise<Record<string, number>> {

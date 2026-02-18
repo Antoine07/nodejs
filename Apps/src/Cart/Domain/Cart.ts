@@ -1,9 +1,9 @@
-import {  Storable, Productable } from "../types";
+import { Storable, Productable } from "../types";
 
 export class Cart {
 
     constructor(
-        private storage: Storable<Promise<void>,Promise<Record<string, number>>>,
+        private storage: Storable<string, number>,
         private tva: number = 0.2
     ) { }
 
@@ -35,8 +35,7 @@ export class Cart {
         return sum;
     }
 
-    async getStorage() {
-        const storage = await this.storage.getStorage();
-
+    async getStorage(): Promise<Record<string, number>> {
+        return await this.storage.getStorage();
     }
 }

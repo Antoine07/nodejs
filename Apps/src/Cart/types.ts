@@ -1,12 +1,8 @@
-export interface Productable {
-    getName(): string;
-    getPrice(): number;
-}
+export type Awaitable<T> = T | Promise<T>;
 
 export interface Productable {
-    getName(): string;
-    setPrice(price: number): void;
-    getPrice(): number;
+  getName(): string;
+  getPrice(): number;
 }
 
 export type PgConfig = {
@@ -18,9 +14,9 @@ export type PgConfig = {
     ssl?: boolean;
 };
 
-export interface Storable<T, U>{
-    setValue(key: string, value: number): T;
-    reset(): T;
-    restore(key: string): T;
-    getStorage(): U;
+export interface Storable<K extends string, V> {
+  setValue(key: K, value: V): Awaitable<void>;
+  reset(): Awaitable<void>;
+  restore(key: K): Awaitable<void>;
+  getStorage(): Awaitable<Record<K, V>>;
 }

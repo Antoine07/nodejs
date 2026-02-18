@@ -5,6 +5,8 @@
   "type": "module",
   "packageManager": "pnpm@10.11.0",
   "scripts": {
+    "test": "vitest",
+    "test:run": "vitest run",
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
@@ -16,7 +18,8 @@
     "@types/node": "^25.2.3",
     "@types/pg": "^8.16.0",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "pg": "^8.18.0",

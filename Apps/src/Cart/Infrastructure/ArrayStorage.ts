@@ -1,6 +1,6 @@
 import { Storable } from "../types";
 
-export class StorageArray implements Storable<void, Record<string, number>> {
+export class StorageArray implements Storable<string, number> {
 
     private storage: Record<string, number> = {};
   

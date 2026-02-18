@@ -42,3 +42,14 @@ const users: User[] = [
 console.log(
     map(users, u => ({ avg: (u.notes.reduce((acc, n) => acc + n)) / u.notes.length }))
 )
+
+function toString(value: unknown): string {
+    return String(value); 
+  }
+
+  toString({})
+
+  function parseJson<T>(text: string): T {
+    return JSON.parse(text) as T;
+  }
+//   const n = parseJson<number>('{"x":1}'); // faux 
