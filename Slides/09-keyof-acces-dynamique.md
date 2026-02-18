@@ -16,14 +16,14 @@ title: "TypeScript — 9 `keyof` et accès dynamique"
 
 - Comprendre `keyof` (union de clés)
 - Écrire un `get` typé : `T[K]`
-- Écrire un `pluck` typé (extraire une “colonne”)
+- Écrire un `pluck` typé (extraire une "colonne")
 - Comprendre le piège des index signatures (`Record<string, ...>`)
 
 ---
 
-# Problème réel : clé dynamique “pas safe”
+# Problème réel : clé dynamique "pas safe"
 
-Cas métier : un tableau (UI) veut afficher une colonne choisie par l’utilisateur.
+Cas métier : un tableau (UI) veut afficher une colonne choisie par l'utilisateur.
 
 ```ts
 type Movie = { id: number; title: string; rating: number };
@@ -33,11 +33,11 @@ function getMovieField(movie: Movie, key: string) {
 }
 ```
 
-Si `key = "raiting"`, l’erreur arrive trop tard (voire en silence).
+Si `key = "raiting"`, l'erreur arrive trop tard (voire en silence).
 
 ---
 
-# `keyof` : union des clés d’un objet
+# `keyof` : union des clés d'un objet
 
 ```ts
 type Movie = { id: number; title: string; rating: number };
@@ -46,6 +46,19 @@ type MovieKey = keyof Movie;
 ```
 
 Objectif : restreindre `key` à un ensemble fini de clés valides.
+
+---
+
+# Solution pour le problème précédent
+
+```ts
+type Movie = { id: number; title: string; rating: number };
+type MovieKey = keyof Movie;
+
+function getMovieField<K extends MovieKey>(movie: Movie, key: K) {
+    return movie[key]; // pas safe : key peut être n'importe quoi
+}
+```
 
 ---
 
@@ -61,7 +74,7 @@ const title = get(m, "title"); // string
 // get(m, "raiting"); // erreur
 ```
 
-Point clé : le type de retour n’est pas “au hasard”, c’est `T[K]`.
+Point clé : le type de retour n'est pas "au hasard", c'est `T[K]`.
 
 ---
 
@@ -83,7 +96,7 @@ const ratings = pluck(movies, "rating"); // number[]
 
 ---
 
-# Exemple métier : `set` typé (immuable)
+# Exemple métier : `set` typé 
 
 Cas métier : un bouton active/désactive un utilisateur (sans mutation).
 
@@ -109,13 +122,13 @@ type Metrics = Record<string, number>;
 type Keys = keyof Metrics; // string
 ```
 
-Ici, `keyof` vaut `string` car **toutes les clés** (n’importe quelle string) sont possibles.
+Ici, `keyof` vaut `string` car **toutes les clés** (n'importe quelle string) sont possibles.
 
 ---
 
 # Comparaison : clés finies vs clés infinies
 
-Clés finies (objet “structuré”) :
+Clés finies (objet "structuré") :
 
 ```ts
 const obj = { a: 1, b: 2 };
@@ -135,11 +148,11 @@ type Keys = keyof Dict; // string
 
 - `keyof T` = union des clés de `T`
 - `T[K]` = type de la propriété `K` dans `T`
-- `K extends keyof T` = “clé valide” (refactor-safe)
-- `Record<string, ...>` = dictionnaire à clés “illimitées” (`keyof` → `string`)
+- `K extends keyof T` = "clé valide" (refactor-safe)
+- `Record<string, ...>` = dictionnaire à clés "illimitées" (`keyof` → `string`)
 
 ---
 
-# Exercice
+# TP
 
-`Exercices/09-keyof-acces-dynamique.md`
+`TPs/TuringMinu/tp-turing-mini.md`

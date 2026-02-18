@@ -1,81 +1,83 @@
-# Mini TP — "Machine de Turing" (version web/dev) — génériques + architecture
+# Mini TP — Turing + entrées fichiers validées (Zod)
 
-Ce mini TP utilise une version **très simplifiée** d'une machine de Turing, adaptée au développement web :
-- un **ruban** (tape) = un tableau de valeurs
-- une **tête** (head) = un index (pointeur)
-- une **règle** (rule) = une fonction qui transforme la valeur courante
-- `step()` applique une transformation et avance la tête
-- `run()` répète jusqu'à la fin du ruban
+Ce TP reprend la logique de `TuringMini`, mais l'entrée de la machine vient de fichiers JSON.
+Le but est de garder un Domain simple et de traiter proprement la frontière "fichier" avec validation runtime.
 
-Objectif : pratiquer TypeScript (génériques + contrats) et une architecture lisible, comme sur le TP panier.
+## Objectif pédagogique
 
-## Contraintes (importantes)
+- Consolider les génériques TypeScript avec `Machine`, `Rule`, `TuringMachine`.
+- Comprendre la séparation logique métier / lecture fichier / orchestration.
+- Valider des données externes avec `zod` avant exécution.
+- Utiliser des variables d'environnement dans Docker Compose pour piloter les fichiers traités.
 
-- Le code doit être organisé, architecturé.
-- Le **Domain** ne doit dépendre d'aucune API .
-- `strict: true` doit passer.
-- Interdits : `any`.
-- Les méthodes publiques doivent avoir des types clairs (contrats).
+## Théorie à retenir
 
-## Théorie (très courte)
+- Le Domain ne doit gérer que la logique de transformation du ruban.
+- Le fichier JSON est une frontière instable: il peut manquer, être invalide, ou ne pas respecter le format attendu.
+- La validation runtime est donc obligatoire avant d'instancier la machine.
+- L'Application orchestre: lire une liste de fichiers, valider, exécuter, gérer les erreurs sans interrompre toute la boucle.
 
-Une machine de Turing "classique" manipule un ruban et applique des transitions.  
-Ici, on garde le cœur de l'idée (ruban + tête + étape), sans la complexité "gauche/droite/écriture/états".
+## Travail demandé (aligné avec `Apps/src/TuringInput`)
 
-Message clé :
+1. Conserver les contrats métier `Machine<T>` et `Rule<T>`.
+2. Conserver la classe `TuringMachine<T>` et son comportement:
+- `step()` lève une erreur si le ruban est vide.
+- `step()` ne fait rien si le pointeur est déjà à la fin.
+- Sinon, la valeur courante est transformée, réécrite, puis le pointeur avance.
+- `run()` répète jusqu'à la fin.
+- `getTape()` renvoie une copie.
+3. Introduire un chargeur générique de données qui reçoit un nom de fichier et un schéma Zod.
+4. Dans ce chargeur:
+- lire le fichier en asynchrone avec les APIs Node de fichiers,
+- parser le JSON,
+- appliquer `safeParse`,
+- lever une exception si la validation échoue,
+- retourner les données validées sinon.
+5. Dans la configuration:
+- lire `MACHINE_FILES` depuis l'environnement,
+- découper la valeur par virgules,
+- nettoyer les espaces,
+- retomber sur une liste vide si la variable est absente.
+6. Dans l'application:
+- construire le chemin absolu vers les fichiers de données,
+- définir un schéma d'entrée avec `name` non vide et `tape` tableau de nombres non vide,
+- définir une règle de transformation numérique (doubler),
+- boucler sur chaque fichier déclaré dans `MACHINE_FILES`,
+- charger + valider + exécuter la machine,
+- afficher le résultat,
+- en cas d'erreur, afficher le fichier concerné et continuer avec le suivant.
 
-> On sépare la **logique** (Domain) de la façon dont on **récupère** les données (Infrastructure) et du **scénario** d'exécution (Application).
+## Résultat attendu
 
-## Emplacement
+- Un fichier valide est traité et le ruban final est affiché.
+- Un fichier invalide (champ manquant, type incorrect, etc.) produit une erreur explicite.
+- Le traitement continue sur les autres fichiers.
 
-Le mini projet est dans `Apps/src/Turing/` :
+## Indications Node.js (fichiers)
 
-## Travail demandé
+- Utilisez la version asynchrone des APIs fichiers pour éviter de bloquer l'exécution.
+- Résolvez toujours des chemins absolus à partir du fichier courant pour éviter les erreurs liées au dossier d'exécution.
+- Distinguez bien les erreurs possibles:
+- erreur de lecture du fichier,
+- erreur de parsing JSON,
+- erreur de validation de schéma.
 
-- `Machine<T>` doit exposer (méthode publique):
-  - `step(): void`
-  - `run(): void`
-  - `getTape(): T[]` (copie, pas la référence interne)
-- `Rule<T>` doit exposer :
-  - `transform(value: T): T`
+## Indications variables d'environnement avec Docker Compose
 
-Objectif : un contrat simple, générique, et réutilisable.
+Dans votre `docker-compose.yml`, le service `app` porte les variables d'environnement nécessaires.
 
-### implémentation
+- `MACHINE_FILES` pilote les fichiers à traiter, sous forme de liste séparée par des virgules.
+- Les variables `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` sont aussi injectées par Compose pour les autres TP backend.
 
-- `TuringMachine<T>` reçoit :
-  - `tape: T[]`
-  - `rule: Rule<T>`
-  - `pointer` (optionnel, par défaut `0`)
-- `step()` :
-  - lève une erreur si le ruban est vide
-  - si `pointer` est à la fin → ne fait rien
-  - sinon :
-    - applique `rule.transform` sur la case courante
-    - écrit le résultat dans le ruban
-    - avance le pointeur de 1
-- `run()` :
-  - exécute `step()` jusqu'à la fin du ruban
-- `getTape()` :
-  - retourne une copie du ruban (`[...]`)
+Points pratiques:
 
-### scénario (démonstration)
+- Toute modification de variables d'environnement dans Compose nécessite de recréer le conteneur pour être prise en compte.
+- Vérifiez que la valeur de `MACHINE_FILES` ne contient pas d'erreurs de nom de fichier.
+- Gardez les noms de fichiers cohérents avec les fichiers réellement présents dans les données.
 
-Créez **au moins 3 règles** et démontrez que la machine est générique :
+## Critères d'évaluation
 
-1) `number` : doubler (`n => n * 2`)
-2) `string` : normaliser (ex: trim + lowercase)
-3) `object` : transformer un DTO vers un modèle (ex: `{ release_year }` → `{ releaseYear }`)
-
-À chaque exemple :
-- affichez le ruban initial
-- lancez `run()`
-- affichez le ruban final
-
-## Livrables
-
-- Le code est proprement séparé 
-- Le Domain est générique et indépendant
-- Le script Application démontre 3 rubans de types différents
-- `strict: true` passe sans `any`
-
+- Noms et comportements alignés avec `TuringMini`.
+- Validation runtime effective avant exécution métier.
+- Gestion d'erreur claire et robuste par fichier.
+- Pilotage par `MACHINE_FILES` opérationnel en environnement Docker Compose.

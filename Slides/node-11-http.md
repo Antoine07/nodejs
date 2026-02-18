@@ -72,7 +72,7 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
   return sendJson(res, 404, { ok: false, error: "Not Found" });
 });
 
-server.listen(3000, "0.0.0.0");
+server.listen(3001, "0.0.0.0");
 ```
 
 ---

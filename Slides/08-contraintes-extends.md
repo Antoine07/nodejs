@@ -14,8 +14,8 @@ title: "TypeScript — 8 Contraintes : extends"
 
 # Objectif du chapitre
 
-- Comprendre `extends` comme une **contrainte** (pas de l’héritage)
-- Restreindre `T` quand on a besoin d’accéder à une propriété/méthode
+- Comprendre `extends` comme une **contrainte** (pas de l'héritage)
+- Restreindre `T` quand on a besoin d'accéder à une propriété/méthode
 - Écrire des helpers génériques “métier” (ex: `byId`, `lengthOf`)
 - Savoir quand éviter une contrainte (API trop rigide)
 
@@ -29,7 +29,7 @@ function byId<T>(items: T[], id: number): T | undefined {
 }
 ```
 
-Erreur : `T` peut être n’importe quoi, donc TypeScript refuse l’accès à `.id`.
+Erreur : `T` peut être n'importe quoi, donc TypeScript refuse l'accès à `.id`.
 
 ---
 
@@ -44,7 +44,7 @@ function byId<T extends { id: number }>(
 }
 ```
 
-On dit : “`T` peut être n’importe quel type, **à condition** d’avoir `id: number`.”
+On dit : “`T` peut être n'importe quel type, **à condition** d'avoir `id: number`.”
 
 ---
 
@@ -92,11 +92,13 @@ lengthOf([1, 2, 3]);   // ok
 // lengthOf(123);      // erreur
 ```
 
-Le but n’est pas “d’être strict”, c’est d’autoriser une opération en sécurité.
+Le but n'est pas “d'être strict”, c'est d'autoriser une opération en sécurité.
 
 ---
 
 # Exemple : `as const` pour satisfaire une contrainte (widening)
+
+`élargissement de type : widening`
 
 ```ts
 type Mode = "dev" | "prod";
@@ -118,12 +120,12 @@ Sur un objet, un littéral peut être élargi en `string`. `as const` conserve `
 
 # Quand éviter de contraindre ?
 
-Évitez une contrainte si elle n’apporte rien (API plus rigide, sans gain).
+Évitez une contrainte si elle n'apporte rien (API plus rigide, sans gain).
 
 ```ts
 function logValue<T>(value: T): void {
   console.log(value);
-} // T n’est pas “transporté” ailleurs : `unknown` suffit souvent
+} // T n'est pas “transporté” ailleurs : `unknown` suffit souvent
 ```
 
 ---
@@ -131,12 +133,6 @@ function logValue<T>(value: T): void {
 # À retenir
 
 - `extends` sert à **autoriser** une opération (accès propriété, méthode…)
-- `extends` n’est pas de l’héritage runtime
+- `extends` n'est pas de l'héritage runtime
 - Une contrainte doit avoir une valeur : meilleure sécurité, meilleure DX
 - Si le générique ne “sert” pas, un type concret ou `unknown` est souvent plus clair
-
----
-
-# Exercices
-
-`Exercices/08-contraintes-extends.md`

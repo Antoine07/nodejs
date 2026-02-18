@@ -54,7 +54,7 @@ async function main() {
             console.error(`Error processing file: ${file}`);
 
             if (error instanceof z.ZodError) {
-                console.error("Validation error:", error.errors);
+                console.error("Validation error:", error.issues);
             } else if (error instanceof Error) {
                 console.error("Error:", error.message);
             } else {

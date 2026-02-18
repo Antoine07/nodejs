@@ -64,6 +64,30 @@ const parsed = Schema.safeParse(data);
 
 ---
 
+# La solution pour gérer la frontière 
+
+```ts
+import { z } from "zod"
+import { readFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const DATA_PATH = join(__dirname, "./");
+const raw = await readFile(`${DATA_PATH}/persons.json`, "utf-8");
+const data: unknown = JSON.parse(raw);
+const Schema = z.object({
+    name: z.string().min(1),
+    tape: z.array(z.number()).min(1),
+});
+const parsed = Schema.safeParse(data);
+
+if (parsed.success) console.log(parsed.data.name)
+```
+
+--- 
+
 # Pattern recommandé
 
 1. Infrastructure : lit + parse + valide
@@ -76,6 +100,6 @@ Message clé :
 
 ---
 
-# Lien TP
+#  TP
 
 `TPs/PipelineMini/tp-pipeline-mini.md`
