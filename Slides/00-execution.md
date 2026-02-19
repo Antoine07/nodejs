@@ -72,9 +72,13 @@ Quand la call stack est vide, l'**event loop** peut planifier la suite.
 CALL STACK → EVENT LOOP → QUEUES (micro/macrotasks)
 ```
 
-* **Call Stack** : exécution synchrone du script
-* **Event Loop** : surveille quand la pile est vide
-* **Queues** : listes de tâches asynchrones qui attendent d'être exécutées
+- **Call Stack** : exécution synchrone du script
+- **Event Loop** : surveille quand la pile est vide
+- **Queues** : listes de tâches asynchrones qui attendent d'être exécutées
+
+---
+
+<img src="./images/event-loop.png" width="800" />
 
 ---
 
@@ -180,11 +184,11 @@ Call Stack
 Version simplifiée :
 
 ```
-1) Exécuter le plus ancien macrotask
-2) Exécuter **toutes** les microtasks
-3) Rafraîchir l'affichage si nécessaire
-4) Si aucune macrotask, attendre une nouvelle tâche
-5) Revenir à (1)
+- Exécuter le plus ancien macrotask
+- Exécuter **toutes** les microtasks
+- Rafraîchir l'affichage si nécessaire
+- Si aucune macrotask, attendre une nouvelle tâche
+- Revenir à (1)
 ```
 
 ---
@@ -210,18 +214,18 @@ Résultat :
 
 Explication :
 
-* `1` & `4` = synchrone
-* `3` = microtask
-* `2` = macrotask
+- `1` & `4` = synchrone
+- `3` = microtask
+- `2` = macrotask
 
 ---
 
 ###  Résumé 
 
-* **Call Stack** → code synchrone
-* **Microtasks** → hautes priorités après stack
-* **Macrotasks** → plus lentes, traitées ensuite
-* **Event Loop** orchestre tout cela
+- **Call Stack** → code synchrone
+- **Microtasks** → hautes priorités après stack
+- **Macrotasks** → plus lentes, traitées ensuite
+- **Event Loop** orchestre tout cela
 
 ---
 
