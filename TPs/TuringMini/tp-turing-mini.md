@@ -14,7 +14,7 @@
 ## Travail demandé (aligné avec `Apps/src/TuringMini`)
 
 1. Définir les contrats métier `Machine<T>` et `Rule<T>`.
-2. Conserver la classe `TuringMachine<T>` et son comportement:
+2. Définir la classe `TuringMachine<T>` et son comportement:
 - `step()` lève une erreur si le ruban est vide.
 - `step()` ne fait rien si le pointeur est déjà à la fin.
 - Sinon, la valeur courante est transformée, réécrite, puis le pointeur avance.
@@ -33,7 +33,6 @@
 - Un fichier valide est traité et le ruban final est affiché.
 - Un fichier invalide (champ manquant, type incorrect, etc.) produit une erreur explicite.
 - Le traitement continue sur les autres fichiers.
-
 
 
 ## Critères d'évaluation
