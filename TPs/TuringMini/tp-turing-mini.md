@@ -1,7 +1,4 @@
-# Mini TP — Turing + entrées fichiers validées (Zod)
-
-Ce TP reprend la logique de `TuringMini`, mais l'entrée de la machine vient de fichiers JSON.
-Le but est de garder un Domain simple et de traiter proprement la frontière "fichier" avec validation runtime.
+# Mini TP — Turing 
 
 ## Objectif pédagogique
 
