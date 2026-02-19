@@ -111,6 +111,7 @@ Ce sont des **Web APIs**.
 Ce sont des APIs système via **libuv**.
 
 ---
+
 # Event Loop : rôle
 
 1. Une opération externe se termine.
@@ -147,7 +148,6 @@ Call Stack
     ↓
 .then(...)
 ```
-
 
 ---
 

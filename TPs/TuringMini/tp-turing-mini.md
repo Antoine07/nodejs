@@ -14,7 +14,6 @@
 ## Travail demandé (aligné avec `Apps/src/TuringMini`)
 
 1. Conserver les contrats métier `Machine<T>` et `Rule<T>`.
-2. Conserver la classe `TuringMachine<T>` et son comportement:
 - `step()` lève une erreur si le ruban est vide.
 - `step()` ne fait rien si le pointeur est déjà à la fin.
 - Sinon, la valeur courante est transformée, réécrite, puis le pointeur avance.
