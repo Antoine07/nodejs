@@ -1,0 +1,29 @@
+<canvas id="commitChart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+async function loadCommits() {
+
+  const response = await fetch(
+    "https://api.github.com/repos/FlorentGATTI/projet-finale_bitchest/commits"
+  );
+
+  const commits = await response.json();
+
+  const labels = commits.slice(0, 10).map((_, i) => `Commit ${i+1}`);
+  const data = commits.slice(0, 10).map(() => 1);
+
+  new Chart(document.getElementById("commitChart"), {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        label: "Commits",
+        data
+      }]
+    }
+  });
+}
+
+loadCommits();
+</script>
