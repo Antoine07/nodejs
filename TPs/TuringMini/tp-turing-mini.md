@@ -6,17 +6,15 @@ Le but est de garder un Domain simple et de traiter proprement la frontière "fi
 ## Objectif pédagogique
 
 - Consolider les génériques TypeScript avec `Machine`, `Rule`, `TuringMachine`.
-- Comprendre la séparation logique métier / lecture fichier / orchestration.
-- Valider des données externes avec `zod` avant exécution.
-- Utiliser des variables d'environnement dans Docker Compose pour piloter les fichiers traités.
+- Comprendre la séparation logique métier orchestration.
 
 ## Théorie à retenir
 
 - Le Domain ne doit gérer que la logique de transformation du ruban.
 - La validation runtime est donc obligatoire avant d'instancier la machine.
-- L'Application orchestre: lire une liste de fichiers, valider, exécuter, gérer les erreurs sans interrompre toute la boucle.
+- L'Application orchestre : exécute, gére les erreurs sans interrompre toute la boucle.
 
-## Travail demandé (aligné avec `Apps/src/TuringInput`)
+## Travail demandé (aligné avec `Apps/src/TuringMini`)
 
 1. Conserver les contrats métier `Machine<T>` et `Rule<T>`.
 2. Conserver la classe `TuringMachine<T>` et son comportement:
@@ -29,7 +27,6 @@ Le but est de garder un Domain simple et de traiter proprement la frontière "fi
 3. Dans l'application:
 - définir un schéma d'entrée avec `name` non vide et `tape` tableau de nombres non vide,
 - définir une règle de transformation numérique (doubler),
-- boucler sur chaque fichier déclaré dans `MACHINE_FILES`,
 - charger + valider + exécuter la machine,
 - afficher le résultat,
 - en cas d'erreur, afficher le fichier concerné et continuer avec le suivant.
