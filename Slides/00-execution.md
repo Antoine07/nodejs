@@ -4,31 +4,72 @@ theme: default
 paginate: true
 class: lead
 header: "[index](https://antoine07.github.io/ts)"
-title: "TypeScript — 0 Contexte de démarrage"
+title: "TypeScript — Annexe : Exécution JavaScript"
 ---
 
 
 ## **Vue d'ensemble : comment JavaScript exécute du code**
 
-<img src="https://media2.dev.to/dynamic/image/width%3D1600%2Cheight%3D900%2Cfit%3Dcover%2Cgravity%3Dauto%2Cformat%3Dauto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F1v05yqyxbjfiepzphyph.png" width="800" />
+
+---
+## JavaScript est écrit en quoi ?
 
 ---
 
-![Image](https://media.licdn.com/dms/image/v2/D5612AQHIuZDc3cqPtg/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1721189705579?e=2147483647\&t=7z1ivEBMlIOpeq4P2UUbbrj1T64ysIpkPv27efVvq60\&v=beta)
+### JavaScript = une spécification
+
+- Le langage est défini par **ECMAScript**
+- C'est une **norme**, pas un programme
+- Elle décrit la syntaxe et le comportement
+
+---
+
+### Le moteur JavaScript
+
+Les moteurs qui exécutent JS sont écrits principalement en :
+
+- **C++**
+
+Exemples :
+
+- **V8** (Chrome, Node.js)
+- **SpiderMonkey** (Firefox)
+- **JavaScriptCore** (Safari)
+
+---
+
+### Ce qui se passe réellement
+
+```
+code JS
+     ↓
+Moteur (C++)
+     ↓
+Code machine
+     ↓
+CPU
+```
+
+---
+
+###  À retenir
+
+> JavaScript est un langage standardisé (ECMAScript).
+> Les moteurs qui l'exécutent sont écrits en C++.
 
 
 ---
 
 **Concept clé :**
 JavaScript est *single-thread* — il exécute le code **une seule ligne à la fois** dans une structure appelée **call stack**.
-➡️ Quand il n'y a plus de code synchrone à exécuter, l'Event Loop prend le relais.([javascript.info][1])
+Quand la call stack est vide, l'**event loop** peut planifier la suite.
 
 ---
 
 **Schéma logique :**
 
 ```
-CALL STACK —> (sinon) EVENT LOOP —> QUEUES (micro/macrotasks)
+CALL STACK → EVENT LOOP → QUEUES (micro/macrotasks)
 ```
 
 * **Call Stack** : exécution synchrone du script
@@ -37,32 +78,93 @@ CALL STACK —> (sinon) EVENT LOOP —> QUEUES (micro/macrotasks)
 
 ---
 
-## **Microtasks vs Macrotasks**
+# D'où vient l'asynchronisme ?
 
-
-<img src="https://media2.dev.to/dynamic/image/width%3D1600%2Cheight%3D900%2Cfit%3Dcover%2Cgravity%3Dauto%2Cformat%3Dauto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F1v05yqyxbjfiepzphyph.png" width="800" />
+Le moteur JS exécute du code synchrone.
+L'asynchronisme provient de l'**environnement d'exécution**.
 
 ---
 
-![Image](https://miro.medium.com/1%2AXVqPA2z1dTHJWm2TwIAsBw.gif)
+# APIs asynchrones dans le navigateur
+
+- `setTimeout`
+- `fetch`
+- événements DOM
+- `XMLHttpRequest`
+
+Ce sont des **Web APIs**.
+
+---
+
+# APIs asynchrones dans Node.js
+
+- file system (`fs`)
+- réseau
+- timers
+- I/O
+- thread pool
+
+Ce sont des APIs système via **libuv**.
+
+---
+# Event Loop : rôle
+
+1. Une opération externe se termine.
+2. Son callback (ou la continuation de Promise) est mis en file d'attente.
+3. Si la call stack est vide, l'event loop injecte la prochaine tâche.
+4. Le moteur l'exécute de façon synchrone.
+
+---
+
+## Promises et microtasks
+
+- Les Promises sont natives JS.
+- Les callbacks `.then/.catch/.finally` passent par la **microtask queue**.
+- Cela reste vrai si la Promise est déjà résolue (`Promise.resolve(...)`) ou résolue après une opération externe.
+
+---
+
+```text
+JS (V8 Engine)
+    ↓
+Appel fonction native fetch (binding C++)
+    ↓
+API réseau interne du navigateur (C/C++)
+    ↓
+Pile réseau / OS (socket TCP, DNS…)
+    ↓
+Réponse reçue
+    ↓
+Résolution de Promise (microtask)
+    ↓
+Event Loop
+    ↓
+Call Stack
+    ↓
+.then(...)
+```
+
+
+---
+
+## **Microtasks vs Macrotasks**
 
 **Deux types de files d'attente :**
 
-### 🧠 *Microtasks*
+### Microtasks
 
 - Prioritaires
 - Promises, `queueMicrotask`, `async/await`
 - Si une microtask en ajoute une autre, elle s'exécute immédiatement
-  **Traitées *avant* les macrotasks.**([tr.javascript.info][2])
+  **Traitées avant les macrotasks.**
 
 ---
 
 ### *Macrotasks*
 
-- Tâches plus “lentes”
+- Tâches plus "lentes"
 - `setTimeout`, événements DOM, I/O
-- Correspondent à la file décrite dans l'introduction de javascript.info
-  **Traitées après toutes les microtasks.**([javascript.info][1])
+- Traitées après toutes les microtasks
 
 **Ordre d'exécution typique :**
 
@@ -75,13 +177,7 @@ CALL STACK —> (sinon) EVENT LOOP —> QUEUES (micro/macrotasks)
 
 ## **L'algorithme simplifié de l'Event Loop**
 
-![Image](https://media.licdn.com/dms/image/v2/D4D12AQExWD31PDbNSQ/article-inline_image-shrink_400_744/article-inline_image-shrink_400_744/0/1703925274828?e=2147483647\&t=HRusha4zIHfOEAzTjkVD0v31nTiYeurt9xsXupneCfM\&v=beta)
-
----
-
-![Image](https://developer.ibm.com/developer/default/tutorials/learn-nodejs-the-event-loop/images/figure-1.png)
-
-Voici une version simplifiée de l'algorithme décrit par javascript.info :([javascript.info][1])
+Version simplifiée :
 
 ```
 1) Exécuter le plus ancien macrotask
@@ -93,11 +189,11 @@ Voici une version simplifiée de l'algorithme décrit par javascript.info :([jav
 
 ---
 
-👉 Important : **toutes les microtasks sont traitées avant d'aller à la prochaine macrotask.**([DEV Community][3])
+Point important : **toutes les microtasks sont traitées avant d'aller à la prochaine macrotask.**
 
 ---
 
-🎯 Exemple classique :
+Exemple classique :
 
 ```js
 console.log(1);
@@ -126,3 +222,11 @@ Explication :
 * **Microtasks** → hautes priorités après stack
 * **Macrotasks** → plus lentes, traitées ensuite
 * **Event Loop** orchestre tout cela
+
+---
+
+### Sources
+
+- https://javascript.info/event-loop
+- https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide
+- https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick
