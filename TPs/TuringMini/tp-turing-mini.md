@@ -53,27 +53,7 @@ Le but est de garder un Domain simple et de traiter proprement la frontière "fi
 - Un fichier invalide (champ manquant, type incorrect, etc.) produit une erreur explicite.
 - Le traitement continue sur les autres fichiers.
 
-## Indications Node.js (fichiers)
 
-- Utilisez la version asynchrone des APIs fichiers pour éviter de bloquer l'exécution.
-- Résolvez toujours des chemins absolus à partir du fichier courant pour éviter les erreurs liées au dossier d'exécution.
-- Distinguez bien les erreurs possibles:
-- erreur de lecture du fichier,
-- erreur de parsing JSON,
-- erreur de validation de schéma.
-
-## Indications variables d'environnement avec Docker Compose
-
-Dans votre `docker-compose.yml`, le service `app` porte les variables d'environnement nécessaires.
-
-- `MACHINE_FILES` pilote les fichiers à traiter, sous forme de liste séparée par des virgules.
-- Les variables `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` sont aussi injectées par Compose pour les autres TP backend.
-
-Points pratiques:
-
-- Toute modification de variables d'environnement dans Compose nécessite de recréer le conteneur pour être prise en compte.
-- Vérifiez que la valeur de `MACHINE_FILES` ne contient pas d'erreurs de nom de fichier.
-- Gardez les noms de fichiers cohérents avec les fichiers réellement présents dans les données.
 
 ## Critères d'évaluation
 
