@@ -145,3 +145,35 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
 server.listen(3001, "0.0.0.0", () => {
     console.log("http://localhost:3001")
 });
+
+
+function ff(arr: any[]) {
+    return arr[0];
+  }
+
+  function fff<T>(arr: T[])  {
+     return arr[0];
+  }
+
+const aa : Array<string> = []
+
+
+type Mode = "dev" | "prod";
+
+function setMode<T extends Mode>(mode: T) {
+  return mode;
+}
+
+
+const cfg1 = { mode: "dev" } as const;
+
+setMode(cfg1.mode)
+
+
+const k = "orange"
+
+const product = {
+    [k] : "manger"
+}
+
+console.log(product)

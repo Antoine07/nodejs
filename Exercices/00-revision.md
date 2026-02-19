@@ -1,4 +1,4 @@
-# Révision — QCM (chapitres 01, 02, 03)
+# Révision — QCM (chapitres 01, 02, 03 + Node)
 
 
 ### Types ≠ valeurs
@@ -167,3 +167,157 @@ A. Compile : `"4.2"` est convertible en nombre
 B. Erreur TypeScript : `cb` attend un `number`  
 C. Compile uniquement avec `as const`  
 D. Erreur runtime uniquement
+
+---
+
+## Chapitre Node 13 — Fichiers
+
+### 1) Frontière runtime : type de `JSON.parse`
+
+```ts
+const raw = await readFile("./input.json", "utf-8");
+const data: unknown = JSON.parse(raw);
+```
+
+Pourquoi typer `data` en `unknown` ?
+
+A. Pour empêcher complètement les erreurs runtime  
+B. Pour forcer une validation avant usage métier  
+C. Parce que `JSON.parse` retourne toujours `never`  
+D. Pour convertir automatiquement les champs en classes métier
+
+---
+
+### 2) Validation Zod
+
+```ts
+const parsed = Schema.safeParse(data);
+```
+
+Quel comportement est correct ?
+
+A. `safeParse` throw toujours en cas d’erreur  
+B. `safeParse` retourne un objet avec `success: true | false`  
+C. `safeParse` modifie le fichier JSON sur disque  
+D. `safeParse` garantit que le JSON source est bien formaté UTF-8
+
+---
+
+### 3) `readFile` et responsabilité
+
+Dans le cours Node 13, `readFile` renvoie :
+
+A. Un objet typé selon votre schéma métier  
+B. Un `number` représentant la taille du fichier  
+C. Une chaîne (si encodage texte demandé), à parser ensuite  
+D. Directement un résultat validé par Zod
+
+---
+
+### 4) Pattern recommandé
+
+Quel enchaînement correspond au pattern vu en cours ?
+
+A. Domain lit le fichier, Application fait le calcul, Infrastructure affiche  
+B. Application valide, Domain fait la DB, Infrastructure décide la TVA  
+C. Infrastructure lit/valide, Domain applique la logique, Application orchestre  
+D. Tout dans `index.ts` pour simplifier
+
+---
+
+## Annexe — Exécution JavaScript
+
+### 1) Event loop : ordre d’exécution
+
+```js
+console.log(1);
+setTimeout(() => console.log(2));
+Promise.resolve().then(() => console.log(3));
+console.log(4);
+```
+
+Quel affichage est correct ?
+
+A. `1 2 3 4`  
+B. `1 4 3 2`  
+C. `1 3 4 2`  
+D. `3 1 4 2`
+
+---
+
+### 2) Microtasks vs macrotasks
+
+Laquelle est vraie ?
+
+A. Les macrotasks passent toujours avant les microtasks  
+B. Les microtasks sont vidées avant de passer à la macrotask suivante  
+C. `setTimeout` est une microtask  
+D. Une Promise `.then(...)` est une macrotask
+
+---
+
+### 3) Source de l’asynchronisme
+
+Dans le cours, l’asynchronisme vient principalement :
+
+A. Du compilateur TypeScript  
+B. Du moteur JS seul, sans environnement  
+C. De l’environnement d’exécution (Web APIs, Node/libuv, OS)  
+D. De `console.log`
+
+---
+
+### 4) JavaScript et ECMAScript
+
+Quel énoncé est correct ?
+
+A. ECMAScript est un moteur d’exécution écrit en TypeScript  
+B. JavaScript est une norme, ECMAScript un framework Node  
+C. ECMAScript définit le langage, les moteurs l’implémentent  
+D. V8 est la norme officielle du langage
+
+---
+
+## Architecture simple (TP Cart)
+
+### 1) Injection de dépendance dans `Cart`
+
+Pourquoi `Cart` reçoit un storage en paramètre ?
+
+A. Pour que `Cart` choisisse dynamiquement sa base SQL interne  
+B. Pour coupler fortement le domaine à PostgreSQL  
+C. Pour découpler le domaine de l’implémentation de persistance  
+D. Pour éviter d’écrire des interfaces TypeScript
+
+---
+
+### 2) Responsabilité du domaine
+
+Dans le TP Cart, qui doit calculer le `total()` avec TVA ?
+
+A. Le storage (`ArrayStorage` / `PgStorage`)  
+B. Le domaine (`Cart`)  
+C. Le script SQL  
+D. Le conteneur Docker
+
+---
+
+### 3) Switch mémoire ↔ Postgres
+
+Quel objectif est recherché par ce switch ?
+
+A. Changer la persistance sans modifier la logique métier  
+B. Éviter toute interface dans `types.ts`  
+C. Déplacer les règles métier dans la DB  
+D. Supprimer le dossier `Infrastructure/`
+
+---
+
+### 4) Organisation "clean simple"
+
+Quelle structure est alignée avec le TP ?
+
+A. `Domain/`, `Infrastructure/`, `Application/`  
+B. `Controllers/`, `Templates/`, `Styles/`  
+C. `Docker/`, `SQL/`, `Tests/` uniquement  
+D. Un seul fichier `cart.ts` sans séparation
