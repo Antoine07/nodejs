@@ -13,7 +13,6 @@ Le but est de garder un Domain simple et de traiter proprement la frontière "fi
 ## Théorie à retenir
 
 - Le Domain ne doit gérer que la logique de transformation du ruban.
-- Le fichier JSON est une frontière instable: il peut manquer, être invalide, ou ne pas respecter le format attendu.
 - La validation runtime est donc obligatoire avant d'instancier la machine.
 - L'Application orchestre: lire une liste de fichiers, valider, exécuter, gérer les erreurs sans interrompre toute la boucle.
 
@@ -28,7 +27,6 @@ Le but est de garder un Domain simple et de traiter proprement la frontière "fi
 - `getTape()` renvoie une copie.
 
 3. Dans l'application:
-- construire le chemin absolu vers les fichiers de données,
 - définir un schéma d'entrée avec `name` non vide et `tape` tableau de nombres non vide,
 - définir une règle de transformation numérique (doubler),
 - boucler sur chaque fichier déclaré dans `MACHINE_FILES`,
