@@ -34,7 +34,6 @@
 - Le traitement continue sur les autres fichiers.
 
 
-
 ## Critères d'évaluation
 
 - Noms et comportements alignés avec `TuringMini`.
