@@ -26,19 +26,8 @@ Le but est de garder un Domain simple et de traiter proprement la frontière "fi
 - Sinon, la valeur courante est transformée, réécrite, puis le pointeur avance.
 - `run()` répète jusqu'à la fin.
 - `getTape()` renvoie une copie.
-3. Introduire un chargeur générique de données qui reçoit un nom de fichier et un schéma Zod.
-4. Dans ce chargeur:
-- lire le fichier en asynchrone avec les APIs Node de fichiers,
-- parser le JSON,
-- appliquer `safeParse`,
-- lever une exception si la validation échoue,
-- retourner les données validées sinon.
-5. Dans la configuration:
-- lire `MACHINE_FILES` depuis l'environnement,
-- découper la valeur par virgules,
-- nettoyer les espaces,
-- retomber sur une liste vide si la variable est absente.
-6. Dans l'application:
+
+3. Dans l'application:
 - construire le chemin absolu vers les fichiers de données,
 - définir un schéma d'entrée avec `name` non vide et `tape` tableau de nombres non vide,
 - définir une règle de transformation numérique (doubler),
